@@ -1,0 +1,170 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using JLMCC.Models;
+
+namespace JLMCC.Controllers
+{
+    public class FlightIntervalsController : Controller
+    {
+        private JlmccContext db = new JlmccContext();
+
+        // GET: FlightIntervals
+        public ActionResult Index(string date)
+        {
+            DateTime daySelected = new DateTime();
+            List<FlightIntervalAndSerivcesViewModel> Views = new List<FlightIntervalAndSerivcesViewModel>();
+            if (date ==null)
+            {
+                daySelected = DateTime.Now;
+
+            }
+            else
+            {
+             
+               daySelected = Convert.ToDateTime(date);
+            }
+            List<FlightInterval> flightinterval = GetFlightsIntervalByDate(daySelected);
+
+            foreach (var item in flightinterval)
+            {
+                FlightIntervalAndSerivcesViewModel view = new FlightIntervalAndSerivcesViewModel()
+                {
+                    FlightInterval = item,
+                    Services = db.Services.Where(m => m.FlightIntervalId == item.Id).ToList()
+                };
+                Views.Add(view);
+            }
+            ViewBag.Date = date;
+            return View(Views);
+
+        }
+
+        public List<FlightInterval> GetFlightsIntervalByDate(DateTime daySelected)
+        {
+            DateTime begin = new DateTime(daySelected.Year, daySelected.Month, daySelected.Day, 6, 0, 0);
+            DateTime end = new DateTime(daySelected.AddDays(1).Year, daySelected.AddDays(1).Month, daySelected.AddDays(1).Day, 6, 0, 0);
+           var flightinterval = from i in db.FlightIntervals
+                                where (i.PreFlight.ScheduleDeparture >= begin &&
+                                       i.PreFlight.ScheduleArrive < end
+                                       )
+                                       ||
+                                       (i.NextFlight.ScheduleDeparture >= begin &&
+                                       i.NextFlight.ScheduleArrive<end
+                                       )
+                                orderby i.PreFlight==null?i.NextFlight.ScheduleDeparture:i.PreFlight.ScheduleArrive
+                                select i;
+                //db.FlightIntervals.Where(m => m.ScheduleDeparture >= begin && m.ScheduleDeparture <= end).ToList();
+            return flightinterval.ToList();
+        }
+
+        // GET: FlightIntervals/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            FlightInterval flightInterval = db.FlightIntervals.Find(id);
+            if (flightInterval == null)
+            {
+                return HttpNotFound();
+            }
+            return View(flightInterval);
+        }
+
+        // GET: FlightIntervals/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: FlightIntervals/Create
+        // 为了防止“过多发布”攻击，请启用要绑定到的特定属性，有关 
+        // 详细信息，请参阅 https://go.microsoft.com/fwlink/?LinkId=317598。
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,PlaneNO,PlaneType,Type,PreFlightId,NextFlightId,Station")] FlightInterval flightInterval)
+        {
+            if (ModelState.IsValid)
+            {
+                db.FlightIntervals.Add(flightInterval);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(flightInterval);
+        }
+
+        // GET: FlightIntervals/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            FlightInterval flightInterval = db.FlightIntervals.Find(id);
+            if (flightInterval == null)
+            {
+                return HttpNotFound();
+            }
+            return View(flightInterval);
+        }
+
+        // POST: FlightIntervals/Edit/5
+        // 为了防止“过多发布”攻击，请启用要绑定到的特定属性，有关 
+        // 详细信息，请参阅 https://go.microsoft.com/fwlink/?LinkId=317598。
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,PlaneNO,PlaneType,Type,PreFlightId,NextFlightId,Station")] FlightInterval flightInterval)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(flightInterval).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(flightInterval);
+        }
+
+        // GET: FlightIntervals/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            FlightInterval flightInterval = db.FlightIntervals.Find(id);
+            if (flightInterval == null)
+            {
+                return HttpNotFound();
+            }
+            return View(flightInterval);
+        }
+
+        // POST: FlightIntervals/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            FlightInterval flightInterval = db.FlightIntervals.Find(id);
+            db.FlightIntervals.Remove(flightInterval);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}

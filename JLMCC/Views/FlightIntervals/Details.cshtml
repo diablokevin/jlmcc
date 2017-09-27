@@ -1,0 +1,64 @@
+﻿@model JLMCC.Models.FlightInterval
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>FlightInterval</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PlaneNO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlaneNO)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PlaneType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlaneType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PreFlightId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PreFlightId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NextFlightId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NextFlightId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Station)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Station)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,245 @@
+﻿@model JLMCC.Models.FlightIntervalAndSerivcesViewModel
+
+@{
+    ViewBag.Title = "Enter";
+}
+
+<h2>航班维护工作</h2>
+<div>
+    <h4>航班</h4>
+    <hr />
+  
+    
+        @{
+            string panelType = "panel-default";
+            switch (Model.FlightInterval.Type)
+            {
+                case JLMCC.Models.FlightIntervalType.航前:
+                    panelType = "panel-success";
+                    break;
+                case JLMCC.Models.FlightIntervalType.过站:
+                    panelType = "panel-info";
+                    break;
+                case JLMCC.Models.FlightIntervalType.航后:
+                    panelType = "panel-danger";
+                    break;
+
+            }
+        }
+
+        <div class=" panel @panelType col-lg-12 container">
+            <div class="row panel-heading">
+                <div class="panel-title col-xs-5 col-sm-3  col-lg-3">@Model.FlightInterval.PlaneNO | @Model.FlightInterval.PlaneType</div>
+                <div class="panel-title col-xs-5 col-sm-3 col-lg-3">
+                    停机位：
+                    @switch (Model.FlightInterval.Type)
+                    {
+                        case JLMCC.Models.FlightIntervalType.航前:
+                            @Model.FlightInterval.NextFlight.DepartureStandNO;
+                            break;
+                        case JLMCC.Models.FlightIntervalType.过站:
+                            @Model.FlightInterval.PreFlight.ArriveStandNO;
+                            break;
+                        case JLMCC.Models.FlightIntervalType.航后:
+                            @Model.FlightInterval.PreFlight.ArriveStandNO;
+                            break;
+
+                    }
+                </div>
+          
+                <div class="panel-title col-xs-2 col-sm-3 col-lg-3">
+                    @Model.FlightInterval.Type.ToString()
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-6">
+                    @if (Model.FlightInterval.PreFlight != null)
+                    { <img src="~/Content/img/arrive.png" />
+                            <span>@Model.FlightInterval.PreFlight.ScheduleArrive.Day @Model.FlightInterval.PreFlight.ScheduleArrive.Hour:@Model.FlightInterval.PreFlight.ScheduleArrive.Minute</span>
+                                <span>@Model.FlightInterval.PreFlight.FlightNO @Model.FlightInterval.PreFlight.DepartureCity - @Model.FlightInterval.PreFlight.ArriveCity</span>
+
+                    }
+                </div>
+                <div class="col-md-6">
+                    @if (Model.FlightInterval.NextFlight != null)
+                    {
+                        <img src="~/Content/img/depature.png" />
+                                <span>@Model.FlightInterval.NextFlight.ScheduleDeparture.Day @Model.FlightInterval.NextFlight.ScheduleDeparture.Hour:@Model.FlightInterval.NextFlight.ScheduleDeparture.Minute</span>
+                                    <span>@Model.FlightInterval.NextFlight.FlightNO @Model.FlightInterval.NextFlight.DepartureCity - @Model.FlightInterval.NextFlight.ArriveCity</span>
+
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+<hr  class="divider"/>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+
+
+
+<div class="container">
+    <form class="form-horizontal" >
+       @if (Model.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || Model.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+       {
+        <div class="form-group">
+            <label class="col-xs-4 col-sm-2 control-label">调度放行</label>
+
+            <div class="col-xs-4 col-sm-3">
+                @if (Model.Services.Where(m => m.Content == "调度放行").Count() > 0)
+                {
+                    <span class="glyphicon glyphicon-ok text-success"></span>
+                    <span class="text-success">@Model.Services.Where(m => m.Content == "调度放行").First().ServiceTime.ToString("HH:mm")</span>    
+                    <span class="text-success">已放行</span>
+                }
+                else
+                {
+                    <span class="glyphicon glyphicon-remove text-danger"></span>
+                        <span class="text-danger">未放行</span>
+                }
+            </div>
+        </div>
+
+        <div class="clear"></div>
+        <hr />
+       }
+           @if (Model.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航后 || Model.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+           {
+           
+               <div class="form-group" >
+                <label class="col-sm-2 control-label">接机人员</label>
+                <div class="col-sm-3">
+                    @foreach (var item in Model.Services.Where(m => m.Content == "接机人员"))
+                    {
+
+                        <span class="text-center">@item.StaffId</span>
+                        <span class="text-center">@item.Name</span>
+                        <span class="text-center">@item.ServiceTime.ToShortTimeString()</span>
+                        <br/>
+                    }
+                </div>
+                    <div class="col-sm-3">
+                        <input type="submit" value="到位" class="btn btn-success  " name="action" onclick='this.form.action="@Url.Action("CreateService", new { flightIntervalId = Model.FlightInterval.Id, content = "接机人员" })"' />
+                           
+                    </div>
+            </div>
+        <div class="clear"></div>
+        <hr />
+        }
+
+      
+        <div class="form-group">
+            <label class="col-sm-2 control-label">机电工卡签署</label>
+            <div class="col-sm-3">
+                @foreach (var item in Model.Services.Where(m => m.Content == "机电签署"))
+                {
+
+                    <span class="text-center">@item.StaffId</span>
+                        <span class="text-center">@item.Name</span>
+                        <span class="text-center">@item.ServiceTime.ToShortTimeString()</span>
+                        <br />
+                }
+            </div>
+            <div class="col-sm-3">
+                <input type="submit" value="完成" class="btn btn-success  " name="action" onclick='this.form.action="@Url.Action("CreateService", new { flightIntervalId = Model.FlightInterval.Id, content = "机电签署" })"' />
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-2 control-label">电子工卡签署</label>
+            <div class="col-sm-3">
+                @foreach (var item in Model.Services.Where(m => m.Content == "电子签署"))
+                {
+
+                    <span class="text-center">@item.StaffId</span>
+                        <span class="text-center">@item.Name</span>
+                        <span class="text-center">@item.ServiceTime.ToShortTimeString()</span>
+                        <br />
+                }
+            </div>
+            <div class="col-sm-3">
+                <input type="submit" value="完成" class="btn btn-success  " name="action" onclick='this.form.action="@Url.Action("CreateService", new { flightIntervalId = Model.FlightInterval.Id, content = "电子签署" })"' />
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-2 control-label">放行签署</label>
+            <div class="col-sm-3">
+                @foreach (var item in Model.Services.Where(m => m.Content == "放行签署"))
+                {
+
+                    <span class="text-center">@item.StaffId</span>
+                    <span class="text-center">@item.Name</span>
+                        <span class="text-center">@item.ServiceTime.ToShortTimeString()</span>
+                        <br />
+                }
+            </div>
+            <div class="col-sm-3">
+                <input type="submit" value="完成" class="btn btn-success  " name="action" onclick='this.form.action="@Url.Action("CreateService", new { flightIntervalId = Model.FlightInterval.Id, content = "放行签署" })"' />
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        <hr />
+
+        @if (Model.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || Model.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+        {
+        <div class="form-group">
+            <label class="col-sm-2 control-label">送机人员</label>
+            <div class="col-sm-3">
+                @foreach (var item in Model.Services.Where(m => m.Content == "送机人员"))
+                {
+
+                    <span class="text-center">@item.StaffId</span>
+                        <span class="text-center">@item.Name</span>
+                        <span class="text-center">@item.ServiceTime.ToShortTimeString()</span>
+                        <br />
+                }
+            </div>
+            <div class="col-sm-3">
+                <input type="submit" value="到位" class="btn btn-success  " name="action" onclick='this.form.action="@Url.Action("CreateService", new { flightIntervalId = Model.FlightInterval.Id, content = "送机人员" })"' />
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        <hr />
+        <div class="form-group">
+            <label class="col-sm-2 control-label">拖车司机</label>
+            <div class="col-sm-3">
+                @foreach (var item in Model.Services.Where(m => m.Content == "拖车司机"))
+                {
+
+                    <span class="text-center">@item.StaffId</span>
+                    <span class="text-center">@item.Name</span>
+                        <span class="text-center">@item.ServiceTime.ToShortTimeString()</span>
+                        <br />
+                }
+            </div>
+            <div class="col-sm-3">
+                <input type="submit" value="到位" class="btn btn-success  " name="action" onclick='this.form.action="@Url.Action("CreateService", new { flightIntervalId = Model.FlightInterval.Id, content = "拖车司机" })"' />
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        <hr />
+        }
+    </form>
+</div>
+
+}
+<p>
+   
+    @Html.ActionLink("返回", "Index")
+</p>
+
+

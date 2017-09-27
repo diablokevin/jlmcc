@@ -1,0 +1,311 @@
+﻿@model IEnumerable<JLMCC.Models.SingleFlightViewModel> 
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("新建", "Create")
+</p>
+<p>
+    @Html.ActionLink("批量录入(从Excel里粘贴)", "Multi")
+</p>
+
+
+
+    @if (false)
+    {
+        <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+    }
+
+    <script>
+        //跟据选择的日期刷新页面
+        function submitDate() {
+           
+            var date = $('#d12').val();
+            window.location.href = "/Flights?date=" + date;
+           
+        }
+
+        function submitService(flightid, content) {
+           
+            $.ajax({
+                url: '/Services/CreateServiceByAjax?flightId=' + flightid + '&content=' + content,
+                type: "Get",
+                async: false,
+                datatype: "json",
+                success: function (data) {
+                    $("#btn_" + flightid).remove();
+                    $('<span class="text-center text-success bg-success"></span>').text(data).appendTo($("#td_" + flightid));
+                   
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            getflight("长春", "arr");
+
+            $("#btn_arrInCGQ").click(function () { $("[name=flightrow][arr=长春]").show(); $("[name=flightrow][arr!=长春]").hide(); });
+            $("#TabCGQ").click(function () { getflight("长春", "arr"); $("#ChildTabCGQ li:eq(0) a").tab("show"); });
+            $("#btn_depFromCGQ").click(function () { getflight("长春", "dep"); });
+            $("#btn_arrInYNJ").click(function () { getflight("延吉", "arr"); });
+            $("#btn_depFromYNJ").click(function () { getflight("延吉", "dep"); });
+            $("#TabYNJ").click(function () { getflight("延吉", "arr"); $("#ChildTabYNJ li:eq(0) a").tab("show"); });
+            $("#btn_arrInNBS").click(function () { getflight("长白山", "arr"); });
+            $("#btn_depFromNBS").click(function () { getflight("长白山", "dep"); });
+            $("#TabNBS").click(function () { getflight("长白山", "arr"); $("#ChildTabNBS li:eq(0) a").tab("show"); });
+
+          
+
+        }
+
+
+     )
+
+        function getflight(city, arrordep) {
+            $("[name=flightrow][" + arrordep + "=" + city + "]").show(); $("[name=flightrow][" + arrordep + "!=" + city + "]").hide();
+        }
+
+    </script>
+
+    <div class="container">
+        <div>
+            <script src="~/My97DatePicker/WdatePicker.js"></script>
+            <span class="col-sm-2 control-label " >请选择航班日期</span>
+            <input id="d12" class=" form-control col-sm-4" type="text" name="date" value="@ViewBag.Date" onClick="WdatePicker({ onpicked: function () { submitDate(); } })" />
+            <img onclick="WdatePicker({el:'d12'})" src="../My97DatePicker/skin/timg.jpg" width="30" height="30" align="middle">
+
+        </div>
+        <div class="clear">
+        </div>
+        <ul id="myTab" class="nav nav-tabs myNav">
+            <li class="active " id="TabCGQ"><a href="#CGQ" data-toggle="tab">长春</a></li>
+            <li class="" id="TabYNJ"><a href="#YNJ" data-toggle="tab">延吉</a></li>
+            <li class="" id="TabNBS"><a href="#NBS" data-toggle="tab">白山</a></li>
+
+        </ul>
+        <div class="panel panel-primary">
+            <div class="tab-content">
+                <div class="tab-pane   in active " id="CGQ">
+                    <ul id="ChildTabCGQ" class="nav nav-pills myNav ">
+                        <li class="active  text-center" id="btn_arrInCGQ"><a href="" data-toggle="pill">进港</a></li>
+                        <li class=" text-center" id="btn_depFromCGQ"><a href="" data-toggle="pill">出港</a></li>
+                    </ul>
+
+                </div>
+
+                <div class="tab-pane  " id="YNJ">
+                    <ul id="ChildTabYNJ" class="nav nav-pills myNav">
+                        <li class="active text-center" id="btn_arrInYNJ"><a href="" data-toggle="pill">进港</a></li>
+                        <li class="text-center" id="btn_depFromYNJ"><a href="" data-toggle="pill">出港</a></li>
+                    </ul>
+                </div>
+                <div class="tab-pane  " id="NBS">
+                    <ul id="ChildTabNBS" class="nav nav-pills myNav">
+                        <li class="active text-center" id="btn_arrInNBS"><a href="" data-toggle="pill">进港</a></li>
+                        <li class="text-center" id="btn_depFromNBS"><a href="" data-toggle="pill">出港</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+
+            <div class="panel-body" id="panelcontent">
+                <table id="flighttalbe" class="table">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.Date)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.FlightNO)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.PlaneNO)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.PlaneType)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.DepartureCity)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.DepartureStandNO)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.ScheduleDeparture)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.ArriveCity)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.ArriveStandNO)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Flight.ScheduleArrive)
+                        </th>
+
+                      
+                        <th>
+                            接机人员
+                        </th>
+                        <th>
+                            工卡签署
+                        </th>
+                        <th>
+                            放行签署
+                        </th>
+                        <th>
+                            送机人员
+                        </th>
+                        <th>
+                            拖车司机
+                        </th>
+                        <th>
+                            调度放行
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr name="flightrow" arr="@item.Flight.ArriveCity" dep="@item.Flight.DepartureCity">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.Date)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.FlightNO)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.PlaneNO)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.PlaneType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.DepartureCity)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.DepartureStandNO)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.ScheduleDeparture)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.ArriveCity)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.ArriveStandNO)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Flight.ScheduleArrive)
+                            </td>
+
+                            <td align="center">
+                                @{
+                                    if (item.Services.Where(m => m.Content == "接机人员").Count() > 0)
+                                    {
+                                        <span class="text-success bg-success">OK</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger bg-danger">NO</span>
+                                    }
+                                }
+
+                            </td>
+                            <td align="center">
+                                @{
+                                    if (item.Services.Where(m => m.Content == "机电签署").Count() > 0 && item.Services.Where(m => m.Content == "电子签署").Count() > 0)
+                                    {
+                                        <span class="text-success bg-success">OK</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger bg-danger">NO</span>
+                                    }
+                                }
+
+                            </td>
+                            <td align="center">
+                                @{
+                                    if (item.Services.Where(m => m.Content == "放行签署").Count() > 0)
+                                    {
+                                        <span class="text-success bg-success">OK</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger bg-danger">NO</span>
+                                    }
+                                }
+
+                            </td>
+                            <td align="center">
+                                @{
+                                    if (item.Services.Where(m => m.Content == "送机人员").Count() > 0)
+                                    {
+                                        <span class="text-success bg-success">OK</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger bg-danger">NO</span>
+                                    }
+                                }
+
+                            </td>
+                            <td align="center">
+                                @{
+                                    if (item.Services.Where(m => m.Content == "拖车司机").Count() > 0)
+                                    {
+                                        <span class="text-success bg-success">OK</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger bg-danger">NO</span>
+                                    }
+                                }
+
+                            </td>
+                            <td id="td_@item.Flight.FlightId" align="center">
+                                @{
+                                    if (item.Services.Where(m => m.Content == "调度放行").Count() > 0)
+                                    {
+                                        foreach (var s in item.Services.Where(m => m.Content == "调度放行"))
+                                        {
+
+
+                                            <span class="text-center text-success bg-success">@s.ServiceTime.ToShortTimeString()</span>
+                                            <br />
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        @*<input type="submit" id="@item.Flight.FlightId" value="放行" class="btn btn-success  " name="action" onclick='this.form.action="@Url.Action("CreateService", "Services",new { flightId = item.Flight.FlightId, content = "调度放行" })"' />*@
+                                        @*@Html.ActionLink("放行", "CreateService", "Services", new { flightId = item.Flight.FlightId, content = "调度放行" },new { @class= "btn btn-success " })*@
+                                        <button id="btn_@item.Flight.FlightId" class="btn btn-success" onclick="submitService(@item.Flight.FlightId,'@HttpUtility.UrlEncode("调度放行",System.Text.Encoding.UTF8)')">放行</button>
+                                    }
+                                }
+
+                            </td>
+                            <td>
+                                @Html.ActionLink("编辑", "Edit", new { id = item.Flight.FlightId }) |
+                                @Html.ActionLink("详情", "Enter", "Services", new { id = item.Flight.FlightId }, null) |
+                                @Html.ActionLink("删除", "Delete", new { id = item.Flight.FlightId })
+                            </td>
+                        </tr>
+                                    }
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+

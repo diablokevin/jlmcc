@@ -1,0 +1,100 @@
+﻿@model JLMCC.Models.Flight
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Flight</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FlightNO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FlightNO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlaneNO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlaneNO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlaneType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlaneType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DepartureCity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DepartureCity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DepartureStandNO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DepartureStandNO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ScheduleDeparture)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ScheduleDeparture)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArriveCity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArriveCity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArriveStandNO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArriveStandNO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ScheduleArrive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ScheduleArrive)
+        </dd>
+
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.FlightId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

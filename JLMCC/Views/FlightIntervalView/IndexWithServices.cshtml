@@ -1,0 +1,393 @@
+﻿@model IEnumerable<JLMCC.Models.FlightIntervalAndSerivcesViewModel>
+
+@{
+    ViewBag.Title = "航班计划";
+}
+
+<h2>运行管控</h2>
+
+@if (false)
+{
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+}
+
+    @* 日期控件相关引用资源 *@
+    <script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+    <link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
+    <script src="~/Content/widget/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <script>
+    $(document).ready(function () {
+        $("#TabCGQ").click(function () { GetFlightIntervalsWithServices('@HttpUtility.UrlEncode("长春", System.Text.Encoding.UTF8)'); });
+        $("#TabYNJ").click(function () { GetFlightIntervalsWithServices('@HttpUtility.UrlEncode("延吉", System.Text.Encoding.UTF8)'); });
+        $("#TabNBS").click(function () { GetFlightIntervalsWithServices('@HttpUtility.UrlEncode("长白山", System.Text.Encoding.UTF8)'); });
+
+        //日期控件初始化
+        $('#datetimepicker').datetimepicker({
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            minView: 2,
+            todayBtn: true,
+            todayHighlight: true
+
+
+        });
+
+        $('#datetimepickerinput').change(function () {
+            var date = $(this).val();
+            window.location.href = "/FlightIntervalView/IndexWithServices?date=" + date;
+
+
+        });
+
+    })
+        function GetFlightIntervalsWithServices(station) {
+            var date = $('#datetimepickerinput').val();
+            window.location.href = "/FlightIntervalView/IndexWithServices?date=" + date + "&station=" + station;
+
+        }
+
+        function submitService(flightId, content, type) {
+
+            $.ajax({
+                url: '/Services/CreateServiceByAjax?flightId=' + flightId + '&content=' + content + '&type=' + type,
+                type: "Get",
+                async: true,
+                datatype: "json",
+                success: function (data) {
+
+                    $("#btn_" + flightId).remove();
+                    $('<span class="text-center text-success bg-success"></span>').text(data).appendTo($("#td_" + flightId));
+
+                }
+
+            })
+        }
+    </script>
+
+    <div class="container">
+    <div class="input-group date col-sm-5 " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+        <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@ViewBag.Date" readonly>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    </div>
+    <input type="hidden" id="dtp_input2" value="" /><br />
+    <div class="clear" />
+    <ul id="myTab" class="nav nav-tabs myNav">
+        <li class="active" id="TabCGQ"><a href="#CGQ" data-toggle="tab">长春</a></li>
+        <li class="" id="TabYNJ"><a href="#YNJ" data-toggle="tab">延吉</a></li>
+        <li class="" id="TabNBS"><a href="#NBS" data-toggle="tab">白山</a></li>
+    </ul>
+    <div class="panel panel-primary">
+        <div class="tab-content">
+            <div class="tab-pane  in active " id="CGQ"></div>
+            <div class="tab-pane " id="YNJ"></div>
+            <div class="tab-pane " id="NBS"></div>
+
+        </div>
+        <div class="panel-body" id="panelcontent">
+            <table id="intervalTalbe" class="table">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.PlaneNO)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.PlaneType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.ArriveStandNO)
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight)
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.ScheduleArrive)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.NextFlight)
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.NextFlight.ScheduleDeparture)
+                    </th>
+
+                    <th>
+                        接机人员
+                    </th>
+                    <th>
+                        机电签署
+                    </th>
+                    <th>
+                        电子签署
+                    </th>
+                    <th>
+                        放行签署
+                    </th>
+                    <th>
+                        送机人员
+                    </th>
+                    <th>
+                        拖车司机
+                    </th>
+                    <th>
+                        调度放行
+                    </th>
+                    <th></th>
+                </tr>
+                @foreach (var item in Model)
+            {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FlightInterval.PlaneNO)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FlightInterval.PlaneType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FlightInterval.Type)
+                        </td>
+                        <td>
+                            @switch (item.FlightInterval.Type)
+                {
+                    case JLMCC.Models.FlightIntervalType.航前:
+                                    @item.FlightInterval.NextFlight.DepartureStandNO;
+                        break;
+                    case JLMCC.Models.FlightIntervalType.过站:
+                                    @item.FlightInterval.PreFlight.ArriveStandNO;
+                        break;
+                    case JLMCC.Models.FlightIntervalType.航后:
+                                    @item.FlightInterval.PreFlight.ArriveStandNO;
+                        break;
+
+                }
+
+                        </td>
+                        <td>
+
+                            @if (item.FlightInterval.PreFlight != null)
+                {
+                                <a href="@Url.Action("Details", "Flights", new { id = item.FlightInterval.PreFlight.FlightId })">
+                                    <p>@item.FlightInterval.PreFlight.FlightNO @item.FlightInterval.PreFlight.DepartureCity - @item.FlightInterval.PreFlight.ArriveCity</p>
+
+                                </a>}
+                        </td>
+
+                        <td class="text-nowrap">
+                            @if (item.FlightInterval.PreFlight != null)
+                {
+                                <p> @item.FlightInterval.PreFlight.ScheduleDeparture.ToString("dd HH:mm")</p>
+                            }
+                        </td>
+                        <td>
+                            @if (item.FlightInterval.NextFlight != null)
+                {
+                                <a href="@Url.Action("Details", "Flights", new { id = item.FlightInterval.NextFlight.FlightId })">
+                                    <p>@item.FlightInterval.NextFlight.FlightNO @item.FlightInterval.NextFlight.DepartureCity - @item.FlightInterval.NextFlight.ArriveCity</p>
+                                </a>}
+                        </td>
+
+                        <td class="text-nowrap">
+                            @if (item.FlightInterval.NextFlight != null)
+                {
+                                <p> @item.FlightInterval.NextFlight.ScheduleDeparture.ToString("dd HH:mm")</p>
+                            }
+                        </td>
+                        <td align="center">
+                            @{
+                                if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航后 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+                                {
+                                    if (item.ServicesForPreFlight.Where(m => m.Content == "接机人员").Count() > 0)
+                                    {
+                                        <span class="text-success bg-success">OK</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger bg-danger">NO</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            }
+
+                        </td>
+
+                        <td align="center">
+                            @{
+                                IEnumerable<JLMCC.Models.Service> servicesME;
+                                if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+                                {
+
+                                    servicesME = item.ServicesForNextFlight.Where(m => m.Content == "机电签署");
+
+                                }
+                                else
+                                {
+                                    servicesME = item.ServicesForPreFlight.Where(m => m.Content == "机电签署");
+
+                                }
+                                if (servicesME.Count() > 0)
+                                {
+                                    <span class="text-success bg-success">OK</span>
+
+                                }
+                                else
+                                {
+                                    <span class="text-danger bg-danger">NO</span>
+                                }
+                            }
+
+                        </td>
+
+                        <td align="center">
+                            @{
+                                IEnumerable<JLMCC.Models.Service> servicesAV;
+                                if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+                                {
+
+                                    servicesAV = item.ServicesForNextFlight.Where(m => m.Content == "电子签署");
+
+                                }
+                                else
+                                {
+                                    servicesAV = item.ServicesForPreFlight.Where(m => m.Content == "电子签署");
+
+                                }
+                                if (servicesAV.Count() > 0)
+                                {
+                                    <span class="text-success bg-success">OK</span>
+
+                                }
+                                else
+                                {
+                                    <span class="text-danger bg-danger">NO</span>
+                                }
+                            }
+
+                        </td>
+
+                        <td align="center">
+                            @{
+                                IEnumerable<JLMCC.Models.Service> servicesDispath;
+                                if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+                                {
+
+                                    servicesDispath = item.ServicesForNextFlight.Where(m => m.Content == "放行签署");
+
+                                }
+                                else
+                                {
+                                    servicesDispath = item.ServicesForPreFlight.Where(m => m.Content == "放行签署");
+
+                                }
+                                if (servicesDispath.Count() > 0)
+                                {
+                                    <span class="text-success bg-success">OK</span>
+
+                                }
+                                else
+                                {
+                                    <span class="text-danger bg-danger">NO</span>
+                                }
+                            }
+
+                        </td>
+
+                        <td align="center">
+                            @{
+
+                                if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+                                {
+                                    if (item.ServicesForNextFlight.Where(m => m.Content == "送机人员").Count() > 0)
+                                    {
+                                        <span class="text-success bg-success">OK</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger bg-danger">NO</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            }
+
+                        </td>
+                        <td align="center">
+                            @{
+                                if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+                                {
+                                    if (item.ServicesForNextFlight.Where(m => m.Content == "拖车司机").Count() > 0)
+                                    {
+                                        <span class="text-success bg-success">OK</span>
+
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger bg-danger">NO</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            }
+
+                        </td>
+
+                        @{
+                            if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
+                            {
+                                <td id="td_@item.FlightInterval.NextFlight.FlightId" align="center">
+                                    @if (item.ServicesForNextFlight.Where(m => m.Content == "调度放行").Count() > 0)
+                                    {
+
+                                        foreach (var s in item.ServicesForNextFlight.Where(m => m.Content == "调度放行"))
+                                        {
+
+
+                                            <span class="text-center text-success bg-success">@s.ServiceTime.ToShortTimeString()</span>
+                                            <br />
+
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        <button id="btn_@item.FlightInterval.NextFlight.FlightId" class="btn btn-success" onclick="submitService(@item.FlightInterval.NextFlight.FlightId,'@HttpUtility.UrlEncode("调度放行",System.Text.Encoding.UTF8)',@((int)JLMCC.Models.ServiceType.ForDepature))">放行</button>
+                                    }
+                                </td>
+                            }
+                            else
+                            {
+                                <td align="center">
+                                    <span class="text-muted">N/A</span>
+                                </td>
+                            }
+                        }
+
+
+
+
+
+                        <td>
+                            @Html.ActionLink("详情", "Enter", "Services", new { PreFlightId = item.FlightInterval.PreFlight == null ? -1 : item.FlightInterval.PreFlight.FlightId, NextFlightId = item.FlightInterval.NextFlight == null ? -1 : item.FlightInterval.NextFlight.FlightId , backUrl = Request.Url.ToString() }, null)
+                        </td>
+                    </tr>
+                            }
+            </table>
+        </div>
+
+    </div>
+
+</div>

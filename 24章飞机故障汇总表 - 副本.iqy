@@ -1,0 +1,4 @@
+WEB
+1
+http://10.104.176.7:80/discoverer/viewer?
+&connectionKey=cf_a101&worksheetName=ELEMENT5/750&queryParameter_wip_status=%25&queryParameter_Station=%25&queryParameter_Fleet=319&queryParameter_Fleet=320&queryParameter_Fleet=321&queryParameter_Defect=%25&queryParameter_ata=24%25&queryParameter_dfr_code=%25&webQueryExport=yes&&password=CSNMEBI&queryParameter_date_from=["queryParameter_date_from","开始时间，格式2015-01-01"]&queryParameter_date_to=["queryParameter_date_to","结束时间，格式2015-01-01"]

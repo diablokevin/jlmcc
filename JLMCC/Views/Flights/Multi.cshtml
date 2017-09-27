@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewBag.Title = "Multi";
+   
+}
+
+<h2>批量录入</h2>
+
+<script src="~/My97DatePicker/WdatePicker.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+       <p>
+           航班：提交数量：@ViewBag.SubmitCount; 跳过数量：@ViewBag.SkipCount; 日期不符数量：@ViewBag.FaultCount
+       </p>
+        <p>
+           航班间隔：提交数量：@ViewBag.IntervalsCount; 跳过数量:@ViewBag.IntervalsSkipCount
+        </p>
+    <div class="form-group">
+        <div class="col-sm-4">
+           
+            <input id="d12" class=" form-control col-sm-4" type="text" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd") " onClick="WdatePicker()">          
+            <img onclick="WdatePicker({el:'d12'})" src="../My97DatePicker/skin/timg.jpg" width="30" height="30" align="middle">
+           
+        </div>
+        <div class="radio col-sm-4 ">
+            <label><input type="radio" name="Station" id="Station1" value="长春" checked />长春</label> 
+            <label><input type="radio" name="Station" id="Station2" value="延吉"  />延吉</label> 
+            <label><input type="radio" name="Station" id="Station3" value="长白山"  />长白山</label> 
+        </div>
+        <div class="col-sm-12">
+            <textarea name="List" class="form-control col-lg-6" rows="20" cols="70" placeholder="序号 性质 航班号 机尾号 机型 出发站 停机位	计划出发 关舱门 COBT时间 滑出时间 离地时间 出港延误 航班延误 到达站 停机位 计划到达 落地时间 滑入时间 所属公司"></textarea>
+        </div>
+    
+        <div >           
+            <input type="submit" value="预览" class="btn btn-info" name="action" />
+            <input type="submit" value="提交" class="btn btn-success" name="action" />
+        </div>
+
+    </div>
+
+            <div class="form-group">
+
+                <table class="table">
+                    <tr>
+                        <th>0序号</th>
+                        <th>1性质</th>
+                        <th>2航班号</th>
+                        <th>3飞机号</th>
+                        <th>4机型</th>
+                        <th>5出发站</th>
+                        <th>6出发停机位</th>
+                        <th>7计划出发</th>
+                        <th>8关舱门</th>
+                        <th>9COBT时间</th>
+                        <th>10滑出时间</th>
+                        <th>11离地时间</th>
+                        <th>12出港延误</th>
+                        <th>13航班延误</th>
+                        <th>14到达站</th>
+                        <th>15到达停机位</th>
+                        <th>16计划到达</th>
+                        <th>17落地时间</th>
+                        <th>18滑入时间</th>
+                        <th>19所属公司</th>
+                    </tr>
+                    @if (ViewBag.Content != null)
+                {
+                    foreach (string item in ViewBag.Content)
+                    {
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                                <tr>
+                                    @foreach(var t in item.Split('\t'))
+                                    {
+                                        <td>@t.ToString()</td>
+                                    }
+
+                                
+                                </tr>
+                            }
+                        }
+                    }
+                </table>
+            </div>
+         
+}
+
+<div>
+    @Html.ActionLink("返回", "Index")
+</div>
+

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <setParameter name="IIS Web Application Name" value="JLMCC" />
+  <setParameter name="DefaultConnection-Web.config Connection String" value="Data Source=WWW.JLMCC.COM;Initial Catalog=jlmcc;Persist Security Info=True;User ID=sa;Password=kevin1129A" />
+  <setParameter name="DefaultConnection_DatabasePublish-Web.config Connection String" value="Data Source=WWW.JLMCC.COM;Initial Catalog=jlmcc;Persist Security Info=True;User ID=sa;Password=kevin1129A" />
+</parameters>

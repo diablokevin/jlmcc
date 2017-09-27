@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<link rel="stylesheet" href="~/Content/Site.css" />
+
+<h1 class="h1">运行管控</h1>
+<hr />
+<div class="myitem">
+    <a href="@Url.Action("IndexWithServices", "FlightIntervalView")">
+        <img src="~/Content/img/调度.png" />
+        </a>
+        <br />
+        <p class="panel-title">调度视图</p>
+
+</div>
+<div class="myitem">
+    <a href="@Url.Action("Index", "FlightIntervalView")">
+        <img src="~/Content/img/工作者.png" />
+    </a>
+    <br />
+        <p class="panel-title">工作者视图</p>
+</div>
+
+
+<div class="myitem">
+    <a href="@Url.Action("Index", "Flights")">
+        <img src="~/Content/img/航班管理.png" />
+    </a>
+    <br />
+    <p class="panel-title">航班管理</p>
+</div>
+
+<div class="clear"></div>

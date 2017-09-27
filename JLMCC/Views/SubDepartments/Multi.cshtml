@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "Multi";
+}
+
+
+<h2>批量录入</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="form-group">
+        <div>
+            <textarea name="List" class="form-control" rows="10" cols="10" placeholder="二级部门名称  上级部门名称"></textarea>
+        </div>
+        <script>
+
+        </script>
+        <div>
+            <input type="submit" value="提交" class="btn btn-default" name="action" />
+        </div>
+
+    </div>
+
+}
+
+<div>
+    @Html.ActionLink("返回", "Index")
+</div>
+
+

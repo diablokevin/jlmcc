@@ -1,0 +1,147 @@
+﻿@model IEnumerable<JLMCC.Models.FlightIntervalViewModel>
+
+@{
+    ViewBag.Title = "GetFlightInterval";
+}
+
+<h2>航班保障</h2>
+
+@if (false)
+{
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+}
+
+    @* 日期控件相关引用资源 *@
+    <script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+    <link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
+    <script src="~/Content/widget/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#TabCGQ").click(function () { GetFlightIntervals('@HttpUtility.UrlEncode("长春", System.Text.Encoding.UTF8)'); });
+            $("#TabYNJ").click(function () { GetFlightIntervals('@HttpUtility.UrlEncode("延吉", System.Text.Encoding.UTF8)'); });
+            $("#TabNBS").click(function () { GetFlightIntervals('@HttpUtility.UrlEncode("长白山", System.Text.Encoding.UTF8)'); });
+
+        //日期控件初始化
+        $('#datetimepicker').datetimepicker({
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            minView: 2,
+            todayBtn: true,
+            todayHighlight: true
+        });
+
+        $('#datetimepickerinput').change(function () {
+            var date = $(this).val();
+            window.location.href = "/FlightIntervalView/Index?date=" + date;
+
+        });
+
+        })
+
+        function GetFlightIntervals(station) {
+            var date = $('#datetimepickerinput').val();
+            window.location.href = "/FlightIntervalView/Index?date=" + date + "&station=" + station;
+
+        }
+        function myrefresh() {
+            window.location.reload();
+        }
+        setTimeout('myrefresh()', 60000); //指定60秒刷新一次
+    </script>
+
+    <div class="container">
+        <div class="input-group date col-sm-5 " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+            <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@ViewBag.Date" readonly>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+        <input type="hidden" id="dtp_input2" value="" /><br />
+
+
+        <div class="clear" />
+        <ul id="myTab" class="nav nav-tabs myNav">
+            <li class="active " id="TabCGQ"><a href="#CGQ" data-toggle="tab">长春</a></li>
+            <li class="" id="TabYNJ"><a href="#YNJ" data-toggle="tab">延吉</a></li>
+            <li class="" id="TabNBS"><a href="#NBS" data-toggle="tab">白山</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane  in active " id="CGQ"></div>
+            <div class="tab-pane " id="YNJ"></div>
+            <div class="tab-pane " id="NBS"></div>
+
+        </div>
+
+    </div>
+
+        @foreach (var item in Model)
+        {
+
+            string panelType = "panel-default";
+            switch (item.Type)
+            {
+                case JLMCC.Models.FlightIntervalType.航前:
+                    panelType = "panel-success";
+                    break;
+                case JLMCC.Models.FlightIntervalType.过站:
+                    panelType = "panel-info";
+                    break;
+                case JLMCC.Models.FlightIntervalType.航后:
+                    panelType = "panel-danger";
+                    break;
+
+            }
+
+
+            <div class=" panel @panelType col-lg-12 container">
+                <div class="row panel-heading">
+                    <div class="panel-title col-xs-5 col-sm-3  col-lg-3">@item.PlaneNO | @item.PlaneType</div>
+                    <div class="panel-title col-xs-5 col-sm-3 col-lg-3">
+
+                        @switch (item.Type)
+                        {
+                            case JLMCC.Models.FlightIntervalType.航前:
+                                @item.NextFlight.DepartureStandNO;
+                                break;
+                            case JLMCC.Models.FlightIntervalType.过站:
+                                @item.PreFlight.ArriveStandNO;
+                                break;
+                            case JLMCC.Models.FlightIntervalType.航后:
+                                @item.PreFlight.ArriveStandNO;
+                                break;
+
+                        }
+                    </div>
+                    <div class="panel-title col-xs-2 col-sm-2 col-lg-1 btn btn-success">
+
+                        @Html.ActionLink(item.Type.ToString(), "Enter","Services", new { PreFlightId = item.PreFlight == null ? -1 : item.PreFlight.FlightId, NextFlightId = item.NextFlight == null ? -1 : item.NextFlight.FlightId ,backUrl=Request.Url.ToString()},null)
+
+                    </div>
+
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-6">
+                        @if (item.PreFlight != null)
+                        { 
+                            <img src="~/Content/img/arrive.png" />
+                            <span>@item.PreFlight.ScheduleArrive.ToString("dd HH:mm")</span>
+                            <span>@item.PreFlight.FlightNO @item.PreFlight.DepartureCity - @item.PreFlight.ArriveCity</span>
+
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        @if (item.NextFlight != null)
+                        {
+                            <img src="~/Content/img/depature.png" />
+                            <span>@item.NextFlight.ScheduleDeparture.ToString("dd HH:mm")</span>
+                            <span>@item.NextFlight.FlightNO @item.NextFlight.DepartureCity - @item.NextFlight.ArriveCity</span>
+
+                        }
+                    </div>
+                </div>
+            </div>
+
+        }
+  

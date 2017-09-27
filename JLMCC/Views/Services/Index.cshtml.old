@@ -1,0 +1,188 @@
+﻿@model IEnumerable<JLMCC.Models.Flight>
+
+@{
+    ViewBag.Title = "Index";
+}
+@if (false)
+{
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+}
+
+<h2>航班计划</h2>
+
+
+
+
+
+@*@{
+        var arrInCGQ = Model.Where(m => m.ArriveCity == "长春");
+        var depFromCGQ = Model.Where(m => m.DepartureCity == "长春");
+        var arrInYNJ = Model.Where(m => m.ArriveCity == "延吉");
+        var depFromYNJ = Model.Where(m => m.DepartureCity == "延吉");
+        var arrInNBS = Model.Where(m => m.ArriveCity == "长白山");
+        var depFromNBS = Model.Where(m => m.DepartureCity == "长白山");
+    }*@
+
+<script>
+
+    //function getflight(city, arrOrDep) {
+      
+    //    $.ajax({
+    //        url: '/Services/getflight?city=' + city + '&arrOrDep=' + arrOrDep,
+    //        type: "Get",
+    //        async: false,
+    //        datatype: "json",
+          
+    //        success: function (data) {
+    //            $("#panelcontent").empty();
+                
+    //            $.each(data, function (i, item) {
+    //                var standNO = (arrOrDep == "arr") ? item.ArriveStandNO : item.DepartureStandNO;
+    //                var row = "<div class='row'></div>";
+    //                var panel = '<div class=" panel panel-info  col-lg-12 container"></div>';
+    //                var panel_head = '<div class="row panel-heading"></div>'
+    //                var panel_title = '<div class="panel-title col-xs-5 col-sm-3  col-lg-3"></div>';
+    //                var panel_body = '<div class="panel-body"></div>';
+    //                var span = '<span></span>';
+    //                var flight = $(row)
+    //                                 .append($(panel)
+    //                                     .append($(panel_head)
+    //                                         .append($(panel_title).text(item.PlaneNO + "|" + item.PlaneType))
+    //                                         .append($(panel_title).text("停机位：" + standNO))
+    //                                         .append($(panel_title).attr("class", "panel-title col-xs-2 col-sm-3 col-lg-3")
+    //                                             .append('<a class="btn btn-success " href="/Services/Enter/' + item.FlightId + '">进入</a>')
+    //                                          )
+    //                                      )
+    //                                     .append($(panel_body)
+    //                                         .append('<span class=" col-sm-3">' + item.FlightNO + '</span>')
+    //                                         .append('<span class="col-sm-9">' + item.DepartureCity + ' (' + item.ScheduleDeparture + '-' + item.ScheduleArrive + ')' + item.ArriveCity + '</span>')
+    //                                     )
+    //                                   )
+    //                $(flight).appendTo("#panelcontent");
+    //                //switch (item.ArriveCity) {
+    //                //    case "长春":
+    //                //        $(flight).appendTo("#panel_arrInCGQ");
+    //                //        break;
+    //                //    case "延吉":
+    //                //        $(flight).appendTo("#panel_arrInYNJ");
+    //                //        break;
+    //                //    case "长白山":
+    //                //        $(flight).appendTo("#panel_arrInNBS");
+    //                //        break;
+    //                //    default:
+    //                //        break;
+    //                //}
+
+    //                //switch (item.DepartureCity) {
+    //                //    case "长春":
+    //                //        $(flight).appendTo("#panel_depFromCGQ");
+    //                //        break;
+    //                //    case "延吉":
+    //                //        $(flight).appendTo("#panel_depFromYNJ");
+    //                //        break;
+    //                //    case "长白山":
+    //                //        $(flight).appendTo("#panel_depFromNBS");
+    //                //        break;
+    //                //    default:
+    //                //        break;
+    //                //}
+
+
+    //            })
+    //        }
+    //    }
+    //        )
+
+    //}
+    function getflight(city, arrordep) {
+        
+        $("[name=flightrow][" + arrordep + "=" + city + "]").show();
+        $("[name=flightrow][" + arrordep + "!=" + city + "]").hide();
+    }
+
+    $(document).ready(function () {
+        getflight("长春", "arr");
+
+        $("#btn_arrInCGQ").click(function () { getflight("长春", "arr");  });
+        $("#TabCGQ").click(function () { getflight("长春", "arr"); $("#ChildTabCGQ li:eq(0) a").tab("show"); });
+        $("#btn_depFromCGQ").click(function () { getflight("长春", "dep"); });
+        $("#btn_arrInYNJ").click(function () { getflight("延吉", "arr"); });
+        $("#btn_depFromYNJ").click(function () { getflight("延吉", "dep"); });
+        $("#TabYNJ").click(function () { getflight("延吉", "arr"); $("#ChildTabYNJ li:eq(0) a").tab("show"); });
+        $("#btn_arrInNBS").click(function () { getflight("长白山", "arr"); });
+        $("#btn_depFromNBS").click(function () { getflight("长白山", "dep"); });
+        $("#TabNBS").click(function () { getflight("长白山", "arr"); $("#ChildTabNBS li:eq(0) a").tab("show"); });
+    
+    }
+    )
+</script>
+
+<div class="container">
+    <ul id="myTab" class="nav nav-tabs myNav">
+        <li class="active " id="TabCGQ"><a href="#CGQ" data-toggle="tab">长春</a></li>
+        <li class="" id="TabYNJ"><a href="#YNJ" data-toggle="tab">延吉</a></li>
+        <li class="" id="TabNBS"><a href="#NBS" data-toggle="tab">白山</a></li>
+
+    </ul>
+    <div class="panel panel-primary">
+        <div class="tab-content">
+            <div class="tab-pane  in active " id="CGQ">
+                <ul id="ChildTabCGQ" class="nav nav-pills myNav ">
+                    <li class="active  text-center" id="btn_arrInCGQ"><a href="" data-toggle="pill">进港</a></li>
+                    <li class=" text-center" id="btn_depFromCGQ"><a href="" data-toggle="pill">出港</a></li>
+                </ul>
+                @*<div>
+                        <button class="btn col-xs-6  btn-primary" id="btn_arrInCGQ">进港</button>
+                        <button class="btn btn-default col-xs-6 " id="btn_depFromCGQ">出港</button>
+                    </div>*@
+            </div>
+
+            <div class="tab-pane " id="YNJ">
+                <ul id="ChildTabYNJ" class="nav nav-pills myNav">
+                    <li class="active text-center" id="btn_arrInYNJ"><a href="" data-toggle="pill">进港</a></li>
+                    <li class="text-center" id="btn_depFromYNJ"><a href="" data-toggle="pill">出港</a></li>
+                </ul>
+            </div>
+            <div class="tab-pane " id="NBS">
+                <ul id="ChildTabNBS" class="nav nav-pills myNav">
+                    <li class="active text-center" id="btn_arrInNBS"><a href="" data-toggle="pill">进港</a></li>
+                    <li class="text-center" id="btn_depFromNBS"><a href="" data-toggle="pill">出港</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+
+
+        <div class="panel-body" id="panelcontent">
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@foreach (var item in Model)
+    {<div class="row"  name="flightrow" arr="@item.ArriveCity" dep="@item.DepartureCity">
+        <div class=" panel panel-info  col-lg-12 container">
+            <div class="row panel-heading">
+                <div class="panel-title col-xs-5 col-sm-3  col-lg-3">@item.PlaneNO | @item.PlaneType</div>
+                <div class="panel-title col-xs-5 col-sm-3 col-lg-3">停机位：@item.ArriveStandNO</div>
+                <div class="panel-title col-xs-2 col-sm-3 col-lg-3">
+                    @Html.ActionLink("进入", "Enter", new { id = item.FlightId }, new { @class = "btn btn-success " })
+                </div>
+
+            </div>
+            <div class="panel-body">
+                <span class=" col-sm-3">@item.FlightNO</span>
+                <span class="col-sm-9">@item.DepartureCity (@item.ScheduleDeparture - @item.ScheduleArrive) @item.ArriveCity</span>
+
+            </div>
+        </div>
+
+    </div>
+
+    }

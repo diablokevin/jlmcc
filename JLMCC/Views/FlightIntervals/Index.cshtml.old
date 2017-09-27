@@ -1,0 +1,63 @@
+﻿@model IEnumerable<JLMCC.Models.FlightInterval>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.PlaneNO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PreFlightId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NextFlightId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Station)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.PlaneNO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            @if (item.PreFlight != null)
+            {
+                <p>@item.PreFlight.DepartureCity - @item.PreFlight.ArriveCity</p>
+            }
+        </td>
+        <td>
+            @if (item.NextFlight != null)
+            {
+              <p>@item.NextFlight.DepartureCity - @item.NextFlight.ArriveCity</p>  
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Station)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>
