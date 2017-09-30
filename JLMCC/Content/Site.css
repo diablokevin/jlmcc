@@ -30,7 +30,7 @@ select
  
     text-align: center;
 }
-div.clear {
+.clear {
     clear: both;
 }
 

@@ -347,5 +347,69 @@ namespace JLMCC.Controllers
           
             
         }
+
+        public JsonResult GetFlightsToJson(string date, string station)
+        {
+            DateTime daySelected = new DateTime();
+            if (date == null || date == "")
+            {
+                daySelected = DateTime.Now;
+
+            }
+            else
+            {
+                daySelected = Convert.ToDateTime(date);
+            }
+
+            if (station == null || station == "")
+            {
+                station = "长春";
+            }
+            List<Flight> flights = GetFlightsByDate(daySelected).Where(m => m.ArriveCity == station || m.DepartureCity == station).ToList();
+
+
+            var planes = flights.OrderBy(m => m.PlaneNO).Select(m => m.PlaneNO).Distinct();
+
+            List<Section> sections = new List<Section>();
+            int i = 0;
+            foreach (var p in planes)
+            {
+                Section s = new Section();
+                s.key = i;
+                s.label = p.ToString();
+                sections.Add(s);
+                i = i + 1;
+            }
+
+            List<FlightTimeLine> timeLines = new List<FlightTimeLine>();
+
+            foreach (Flight flight in flights)
+            {
+                FlightTimeLine timeline = new FlightTimeLine();
+                timeline.section_id = sections.Where(m => m.label == flight.PlaneNO).First().key;
+                timeline.text = string.Format("{0}{1}{2}",flight.DepartureCity, flight.FlightNO,flight.ArriveCity);
+                timeline.start_date = flight.ScheduleDeparture.ToString();
+                timeline.end_date = flight.ScheduleArrive.ToString();
+                timeLines.Add(timeline);
+
+            }
+            FlightsJson result = new FlightsJson
+            {
+                Sections = sections,
+                Flights = timeLines
+
+        };
+
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
+
+    
+
+        public ActionResult Gantt()
+        {
+            return View();
+        }
     }
 }

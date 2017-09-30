@@ -74,4 +74,26 @@ namespace JLMCC.Models
     //    [System.ComponentModel.DataAnnotations.Schema.ForeignKey("NextFlightId")]
     //    public virtual Flight NextFlight { get; set; }
     //}
+    public class Section
+    {
+        public int key { get; set; }
+        public string label { get; set; }
+
+    }
+
+    public class FlightTimeLine
+    {
+        public string text { get; set; }
+        public string start_date { get; set; }
+        public string end_date { get; set; }
+
+        public int section_id { get; set; }
+    }
+
+    public class FlightsJson
+    {
+      public List<Section> Sections { get; set; }
+      public List<FlightTimeLine> Flights { get; set; }
+
+    }
 }

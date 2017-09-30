@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewBag.Title = "Gantt";
+}
+
+<h2>Gantt</h2>
+
+@if (false)
+{
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+}
+
+
+<script src="~/Scripts/dhtmlxscheduler/dhtmlxscheduler.js"></script>
+<script src="~/Scripts/dhtmlxscheduler/ext/dhtmlxscheduler_timeline.js"></script>
+<link href="~/Content/dhtmlxscheduler/dhtmlxscheduler.css" rel="stylesheet" />
+<script src="~/Scripts/dhtmlxscheduler/ext/dhtmlxscheduler_agenda_view.js"></script>
+<script src="~/Scripts/dhtmlxscheduler/locale/locale_cn.js"></script>
+<script>
+    $(document).ready(function () {
+
+
+        scheduler.locale.labels.timeline_tab = "Timeline";
+        scheduler.locale.labels.section_custom = "Section";
+        scheduler.config.details_on_create = true;
+        scheduler.config.details_on_dblclick = true;
+        scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+
+        //===============
+        //Configuration
+        //===============
+
+        var sections;
+        var timelines
+        $.ajax({
+            url: '/Flights/GetFlightsToJson',
+            type: "Get",
+            async: false,
+            datatype: "json",
+            success: function (data) {
+                sections = data.Sections;
+                timelines = data.Flights;
+            }
+        }
+            )
+
+
+
+
+        scheduler.createTimelineView({
+            name: "timeline",
+            x_unit: "minute",
+            x_date: "%H:%i",
+            x_step: 30,
+            x_size: 24,
+            x_start: 12,
+            x_length: 12,
+            y_unit: sections,
+            y_property: "section_id",
+            render: "bar"
+        });
+
+        //===============
+        //Data loading
+        //===============
+        scheduler.config.lightbox.sections = [
+            { name: "description", height: 130, map_to: "text", type: "textarea", focus: true },
+            { name: "custom", height: 23, type: "select", options: sections, map_to: "section_id" },
+            { name: "time", height: 72, type: "time", map_to: "auto" }
+        ];
+
+        scheduler.init('scheduler_here', new Date(), "timeline");
+        scheduler.parse(timelines, "json");
+
+
+
+
+    });
+
+
+
+</script>
+
+<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:800px;'>
+    <div class="dhx_cal_navline">
+        <div class="dhx_cal_prev_button">&nbsp;</div>
+        <div class="dhx_cal_next_button">&nbsp;</div>
+        <div class="dhx_cal_today_button"></div>
+        <div class="dhx_cal_date"></div>
+     
+    </div>
+    <div class="dhx_cal_header">
+    </div>
+    <div class="dhx_cal_data">
+    </div>
+</div>

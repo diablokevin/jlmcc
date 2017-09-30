@@ -1,52 +1,140 @@
 ﻿@{
     ViewBag.Title = "About";
+   
 }
 <h2>@ViewBag.Title</h2>
 <h3>@ViewBag.Message</h3>
-<script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
 
 <p>Use this area to provide additional information.</p>
-<p>@ViewBag.StaffId</p>
+
 @if(false)
 {
 <script src = "~/Scripts/jquery-3.1.1.min.js" ></script>
 }
-<script src="~/Content/widget/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+<script src="~/Scripts/dhtmlxscheduler/dhtmlxscheduler.js"></script>
+<script src="~/Scripts/dhtmlxscheduler/ext/dhtmlxscheduler_timeline.js"></script>
+<link href="~/Content/dhtmlxscheduler/dhtmlxscheduler.css" rel="stylesheet" />
+<script src="~/Scripts/dhtmlxscheduler/ext/dhtmlxscheduler_agenda_view.js"></script>
+<script src="~/Scripts/dhtmlxscheduler/locale/locale_cn.js"></script>
 <script>
     $(document).ready(function () {
-        $("button").click(function(){
-           
-            $("#test").html("<h1> @ViewBag.Title </h1>");
-        })
+      
+        
+        scheduler.locale.labels.timeline_tab = "Timeline";
+        scheduler.locale.labels.section_custom = "Section";
+        scheduler.config.details_on_create = true;
+        scheduler.config.details_on_dblclick = true;
+        scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+   
+        //===============
+        //Configuration
+        //===============
 
-        $('#datetimepicker').datetimepicker({
-            language: 'zh-CN',
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            minView: 2,
-            todayBtn: true,
-            todayHighlight: true
-            
-            
+        var sections;
+        var timelines
+        $.ajax({
+            url: '/Flights/GetFlightsToJson',
+            type: "Get",
+            async: false,
+            datatype: "json",
+            success: function (data) {
+                sections = data.Sections;
+                timelines = data.Flights;
+            }
+        }
+            )
+    
+      
+
+ //       var sections = [
+ //           { key: 1, label: "B-1606" },
+ //{ key: 2, label: "B-1652" },
+ //{ key: 3, label: "B-1831" },
+ //{ key: 4, label: "B-2280" },
+ //{ key: 5, label: "B-2281" },
+ //{ key: 6, label: "B-2295" },
+ //{ key: 7, label: "B-2418" },
+ //{ key: 8, label: "B-6206" },
+ //{ key: 9, label: "B-6207" },
+ //{ key: 10, label: "B-6302" },
+ //{ key: 11, label: "B-6307" },
+ //{ key: 12, label: "B-6583" },
+ //{ key: 13, label: "B-6655" },
+ //{ key: 14, label: "B-6678" },
+ //{ key: 15, label: "B-6812" },
+ //{ key: 16, label: "B-6826" },
+ //{ key: 17, label: "B-6897" },
+ //{ key: 18, label: "B-6945" },
+ //{ key: 19, label: "B-6975" },
+ //{ key: 20, label: "B-9915" },
+ //{ key: 21, label: "B-9953" },
+ //{ key: 22, label: "B-9960" }
+ //       ];
+        
+        scheduler.createTimelineView({
+            name: "timeline",
+            x_unit: "minute",
+            x_date: "%H:%i",
+            x_step: 30,
+            x_size: 24,
+            x_start: 12,
+            x_length: 12,
+            y_unit: sections,
+            y_property: "section_id",
+            render: "bar"
         });
 
-           
+        //===============
+        //Data loading
+        //===============
+        scheduler.config.lightbox.sections = [
+            { name: "description", height: 130, map_to: "text", type: "textarea", focus: true },
+            { name: "custom", height: 23, type: "select", options: sections, map_to: "section_id" },
+            { name: "time", height: 72, type: "time", map_to: "auto" }
+        ];
+
+        scheduler.init('scheduler_here', new Date(), "timeline");
+        scheduler.parse(timelines, "json");
+
+        //scheduler.parse([
+        //    { start_date: "2017-06-30 09:03:30", end_date: "2017-06-30 12:00", text: "Task A-12458", section_id: 1 },
+        //    { start_date: "2017-06-30 10:00", end_date: "2017-06-30 16:00", text: "Task A-89411", section_id: 1 },
+        //    { start_date: "2017-06-30 10:00", end_date: "2017-06-30 14:00", text: "Task A-64168", section_id: 1 },
+        //    { start_date: "2017-06-30 16:00", end_date: "2017-06-30 17:00", text: "Task A-46598", section_id: 1 },
+
+        //    { start_date: "2017-06-30 12:00", end_date: "2017-06-30 20:00", text: "Task B-48865", section_id: 2 },
+        //    { start_date: "2017-06-30 14:00", end_date: "2017-06-30 16:00", text: "Task B-44864", section_id: 2 },
+        //    { start_date: "2017-06-30 16:30", end_date: "2017-06-30 18:00", text: "Task B-46558", section_id: 2 },
+        //    { start_date: "2017-06-30 18:30", end_date: "2017-06-30 20:00", text: "Task B-45564", section_id: 2 },
+
+        //    { start_date: "2017-06-30 08:00", end_date: "2017-06-30 12:00", text: "Task C-32421", section_id: 3 },
+        //    { start_date: "2017-06-30 14:30", end_date: "2017-06-30 16:45", text: "Task C-14244", section_id: 3 },
+
+        //    { start_date: "2017-06-30 09:20", end_date: "2017-06-30 12:20", text: "Task D-52688", section_id: 4 },
+        //    { start_date: "2017-06-30 11:40", end_date: "2017-06-30 16:30", text: "Task D-46588", section_id: 4 },
+        //    { start_date: "2017-06-30 12:00", end_date: "2017-06-30 18:00", text: "Task D-12458", section_id: 4 }
+        //], "json");
+
     }); 
-    
+  
 </script>
 
- 
-                <div class="input-group date col-sm-5 " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                    <input class="form-control" size="16" type="text" value="" readonly>
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-                </div>
-                <input type="hidden" id="dtp_input2" value="" /><br />
-         
-<input size="16" type="text" value="2012-06-15 14:45" readonly class="form_datetime">
-
-<div class="input-append date form_datetime">
-    <input size="16" type="text" value="" readonly>
-    <span class="add-on"><i class="icon-th"></i></span>
+<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:500px;'>
+    <div class="dhx_cal_navline">
+        <div class="dhx_cal_prev_button">&nbsp;</div>
+        <div class="dhx_cal_next_button">&nbsp;</div>
+        <div class="dhx_cal_today_button"></div>
+        <div class="dhx_cal_date"></div>
+        <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
+        <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
+        <div class="dhx_cal_tab" name="timeline_tab" style="right:280px;"></div>
+        <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div>
+        <div class="dhx_cal_tab" name="agenda_tab" style="right:280px;"></div>
+    </div>
+    <div class="dhx_cal_header">
+    </div>
+    <div class="dhx_cal_data">
+    </div>
 </div>

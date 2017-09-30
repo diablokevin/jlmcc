@@ -5,8 +5,31 @@
 }
 
 <h2>批量录入</h2>
+@* 日期控件相关引用资源 *@
+<script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
+<script src="~/Content/widget/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
-<script src="~/My97DatePicker/WdatePicker.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#TabCGQ").click(function () { GetFlightIntervals('@HttpUtility.UrlEncode("长春", System.Text.Encoding.UTF8)'); });
+        $("#TabYNJ").click(function () { GetFlightIntervals('@HttpUtility.UrlEncode("延吉", System.Text.Encoding.UTF8)'); });
+        $("#TabNBS").click(function () { GetFlightIntervals('@HttpUtility.UrlEncode("长白山", System.Text.Encoding.UTF8)'); });
+
+        //日期控件初始化
+        $('#datetimepicker').datetimepicker({
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            minView: 2,
+            todayBtn: true,
+            todayHighlight: true
+        });
+    })
+  
+
+       
+</script>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -19,8 +42,14 @@
     <div class="form-group">
         <div class="col-sm-4">
            
-            <input id="d12" class=" form-control col-sm-4" type="text" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd") " onClick="WdatePicker()">          
-            <img onclick="WdatePicker({el:'d12'})" src="../My97DatePicker/skin/timg.jpg" width="30" height="30" align="middle">
+            <div class="input-group date  "  id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
+            <input type="hidden" id="dtp_input2" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" /><br />
+
+
            
         </div>
         <div class="radio col-sm-4 ">

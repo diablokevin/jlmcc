@@ -126,5 +126,25 @@ namespace JLMCC.Controllers
             return flightIntervalViews.OrderBy(i => i.PreFlight == null ? i.NextFlight.ScheduleDeparture : i.PreFlight.ScheduleArrive).ToList();
         }
 
+        public JsonResult GetFlightIntervalToJson(string date, string station)
+        {
+            DateTime daySelected = new DateTime();
+            if (date == null || date == "")
+            {
+                daySelected = DateTime.Now;
+
+            }
+            else
+            {
+                daySelected = Convert.ToDateTime(date);
+            }
+
+            List<FlightIntervalViewModel> flightIntervals = GetFlightInterval(daySelected, station);
+            ViewBag.Date = date;
+           
+
+            return Json(flightIntervals,JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
