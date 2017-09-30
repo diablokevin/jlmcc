@@ -374,9 +374,11 @@ namespace JLMCC.Controllers
             int i = 0;
             foreach (var p in planes)
             {
-                Section s = new Section();
-                s.key = i;
-                s.label = p.ToString();
+                Section s = new Section()
+                {
+                    key = i,
+                    label = p.ToString()
+                };
                 sections.Add(s);
                 i = i + 1;
             }
@@ -385,11 +387,13 @@ namespace JLMCC.Controllers
 
             foreach (Flight flight in flights)
             {
-                FlightTimeLine timeline = new FlightTimeLine();
-                timeline.section_id = sections.Where(m => m.label == flight.PlaneNO).First().key;
-                timeline.text = string.Format("{0}{1}{2}",flight.DepartureCity, flight.FlightNO,flight.ArriveCity);
-                timeline.start_date = flight.ScheduleDeparture.ToString();
-                timeline.end_date = flight.ScheduleArrive.ToString();
+                FlightTimeLine timeline = new FlightTimeLine()
+                {
+                    section_id = sections.Where(m => m.label == flight.PlaneNO).First().key,
+                    text = string.Format("{0}{1}{2}", flight.DepartureCity, flight.FlightNO, flight.ArriveCity),
+                    start_date = flight.ScheduleDeparture.ToString(),
+                    end_date = flight.ScheduleArrive.ToString()
+                };
                 timeLines.Add(timeline);
 
             }
