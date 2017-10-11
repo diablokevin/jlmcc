@@ -64,6 +64,11 @@
 
             })
         }
+
+        function myrefresh() {
+            window.location.reload();
+        }
+        setTimeout('myrefresh()', 60000); //指定60秒刷新一次
     </script>
 
     <div class="container">
@@ -88,7 +93,7 @@
         </div>
         <div class="panel-body" id="panelcontent">
             <table id="intervalTalbe" class="table">
-                <tr>
+                <tr >
                     <th>
                         @Html.DisplayNameFor(model => model.FlightInterval.PlaneNO)
                     </th>
