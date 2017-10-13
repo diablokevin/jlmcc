@@ -7,13 +7,13 @@ namespace JLMCC.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class alterflightInterval : IMigrationMetadata
+    public sealed partial class init : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(alterflightInterval));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(init));
         
         string IMigrationMetadata.Id
         {
-            get { return "201709260209534_alterflightInterval"; }
+            get { return "201710130635420_init"; }
         }
         
         string IMigrationMetadata.Source

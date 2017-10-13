@@ -52,6 +52,109 @@ namespace JLMCC.Controllers
             }
         }
 
+        [Authorize(Roles ="管理员")]
+        public ActionResult Index()
+        {
+            return View(UserManager.Users);
+          
+        }
+        [Authorize(Roles = "管理员")]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "管理员")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult>  Create(RegisterViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.StaffId, StaffId = model.StaffId, RealName = model.RealName };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if(result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                AddErrors(result);
+            }
+            return View(model);
+        }
+        [Authorize(Roles = "管理员")]
+        public async Task<ActionResult> Edit(string id)
+        {
+            ApplicationUser user = await UserManager.FindByIdAsync(id);
+            if(user!=null)
+            {
+                return View(user);
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        [Authorize(Roles = "管理员")]
+        public async Task<ActionResult> Edit(string id,string staffid,string realname,string password)
+        {
+            ApplicationUser user = await UserManager.FindByIdAsync(id);
+
+            if(user!=null)
+            {
+                IdentityResult validPass = null;
+                if(password!= string.Empty)
+                {
+                    //验证密码是否满足要求
+                    validPass = await UserManager.PasswordValidator.ValidateAsync(password);
+                    if(validPass.Succeeded)
+                    {
+                        user.PasswordHash = UserManager.PasswordHasher.HashPassword(password);
+                    }
+                    else
+                    {
+                        AddErrors(validPass);
+                    }
+                }
+                user.StaffId = staffid;
+                user.RealName = realname;
+                if(validPass==null||validPass.Succeeded)
+                {
+                    IdentityResult result = await UserManager.UpdateAsync(user);
+                    if(result.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    AddErrors(result);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "无法找到该用户");
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "管理员")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            ApplicationUser user = await UserManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                if (user.UserName == "admin")
+                {
+                    return View("Error", new[] { "请勿删除管理员！" });
+                }
+
+                IdentityResult result = await UserManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                return View("Error", result.Errors);
+            }
+            return View("Error", new[] { "User Not Found" });
+        }
+
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -139,7 +242,7 @@ namespace JLMCC.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            ViewBag.DepartmentId = new SelectList(db.Departments, "Id", "Name" );
+            //ViewBag.DepartmentId = new SelectList(db.Departments, "Id", "Name" );
             return View();
         }
 

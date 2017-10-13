@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using JLMCC.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Threading.Tasks;
 namespace JLMCC.Controllers
 {
     public class ServicesController : Controller
@@ -277,11 +278,11 @@ namespace JLMCC.Controllers
             return Redirect(HttpContext.Request.UrlReferrer.ToString());
         }
         [Authorize]
-        public string CreateServiceByAjax(int flightId, string content, ServiceType type)
+        public async Task<string> CreateServiceByAjax(int flightId, string content, ServiceType type)
         {
             Service service = new Service();
             UserManager<ApplicationUser> UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-            var user = UserManager.FindById(User.Identity.GetUserId());
+            var user =await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
             service.Name = user.RealName;
             service.StaffId = user.StaffId;

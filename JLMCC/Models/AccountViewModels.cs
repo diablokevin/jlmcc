@@ -123,4 +123,23 @@ namespace JLMCC.Models
         [Display(Name = "电子邮件")]
         public string Email { get; set; }
     }
+
+    public class EditAcountViewModel
+    {
+        [Required]
+        [Display(Name = "员工号")]
+        public string StaffId { get; set; }
+
+        [Required]
+        [Display(Name = "姓名")]
+        public string RealName { get; set; }
+        
+
+        [Required]
+        [StringLength(100, ErrorMessage = "{0} 必须至少包含 {2} 个字符。", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "密码")]
+        public string Password { get; set; }
+        
+    }
 }

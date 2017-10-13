@@ -28,6 +28,13 @@ namespace JLMCC.Models
         //public virtual Department Department { get; set; }
         //public virtual SubDepartment Subdepartment { get; set; }
     }
+    public class ApplicationRole:IdentityRole
+    {
+        public ApplicationRole() : base() { }
+
+        public ApplicationRole(string name) : base(name) { }
+        // 在此添加额外属性
+    }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

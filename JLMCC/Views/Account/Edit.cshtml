@@ -1,0 +1,28 @@
+﻿@model JLMCC.Models.ApplicationUser
+@{
+    ViewBag.Title = "编辑用户";
+}
+@Html.ValidationSummary(false)
+<h2>编辑用户</h2>
+<div class="form-group">
+    <label>用户名</label>
+    <p class="form-control-static">@Model.UserName</p>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(x => x.Id)
+    <div class="form-group">
+        <label>员工号</label>
+        @Html.TextBoxFor(x => x.StaffId, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label>姓名</label>
+        @Html.TextBoxFor(x => x.RealName, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label>密码</label>
+        <input name="password" type="password" class="form-control" placeholder="不改密码无需填写" />
+    </div>
+    <button type="submit" class="btn btn-primary">保存</button>
+    @Html.ActionLink("取消", "Index", null, new { @class = "btn btn-default" })
+}
