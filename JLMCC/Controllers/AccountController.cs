@@ -20,6 +20,7 @@ namespace JLMCC.Controllers
         private JlmccContext db = new JlmccContext();
         public AccountController()
         {
+
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
@@ -52,6 +53,15 @@ namespace JLMCC.Controllers
             }
         }
 
+        private ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().GetUserManager<ApplicationRoleManager>();
+            }
+        }
+
+
         [Authorize(Roles ="管理员")]
         public ActionResult Index()
         {
@@ -61,13 +71,14 @@ namespace JLMCC.Controllers
         [Authorize(Roles = "管理员")]
         public ActionResult Create()
         {
+            ViewBag.Role = new SelectList( RoleManager.Roles.ToList(),"Name", "Name");
             return View();
         }
 
         [HttpPost]
         [Authorize(Roles = "管理员")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult>  Create(RegisterViewModel model)
+        public async Task<ActionResult>  Create(CreateViewModel model)
         {
             if(ModelState.IsValid)
             {
@@ -75,10 +86,12 @@ namespace JLMCC.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if(result.Succeeded)
                 {
+                    UserManager.AddToRole(user.Id, model.Role);
                     return RedirectToAction("Index");
                 }
                 AddErrors(result);
             }
+            ViewBag.Role = new SelectList(RoleManager.Roles.ToList(), "Name", "Name",model.Role);
             return View(model);
         }
         [Authorize(Roles = "管理员")]
@@ -260,6 +273,12 @@ namespace JLMCC.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    string defaultRole = "工作者";
+                    if(! RoleManager.RoleExists(defaultRole))
+                    {
+                        RoleManager.Create(new ApplicationRole(defaultRole));
+                    }
+                    UserManager.AddToRole(user.Id, defaultRole);
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771

@@ -1,4 +1,4 @@
-﻿@model JLMCC.Models.RegisterViewModel
+﻿@model JLMCC.Models.CreateViewModel
 @{
     ViewBag.Title = "注册";
 }
@@ -23,7 +23,13 @@
             @Html.TextBoxFor(m => m.RealName, new { @class = "form-control" })
         </div>
     </div>
-
+    <div class="form-group">
+        @Html.LabelFor(m => m.Role, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownList("Role", null, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
+        </div>
+    </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
