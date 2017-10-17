@@ -14,7 +14,7 @@ namespace JLMCC.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(JLMCC.Models.ApplicationDbContext context)
