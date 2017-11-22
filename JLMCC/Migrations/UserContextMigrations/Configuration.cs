@@ -1,10 +1,8 @@
-using JLMCC.Models;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using JLMCC.Infrastructure;
-
-namespace JLMCC.Migrations
+namespace JLMCC.UserContextMigrations
 {
+    using JLMCC.Models;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -14,7 +12,8 @@ namespace JLMCC.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
+            MigrationsDirectory = @"UserContextMigrations";
         }
 
         protected override void Seed(JLMCC.Models.ApplicationDbContext context)
@@ -57,7 +56,6 @@ namespace JLMCC.Migrations
             }
 
             context.SaveChanges();
-
         }
     }
 }

@@ -88,6 +88,8 @@ namespace JLMCC.Models
         public string end_date { get; set; }
 
         public int section_id { get; set; }
+        public string PlaneNO { get; set; }
+        public int FlightId { get; set; }
     }
 
     public class FlightsJson

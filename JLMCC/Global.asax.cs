@@ -20,9 +20,13 @@ namespace JLMCC
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             //自动迁移
-            Database.SetInitializer<JLMCC.Models.ApplicationDbContext>(new MigrateDatabaseToLatestVersion<JLMCC.Models.ApplicationDbContext,  JLMCC.Migrations.Configuration>());
-            var dbMigrator = new DbMigrator(new JLMCC.Migrations.Configuration());
-            dbMigrator.Update();
+            Database.SetInitializer<JLMCC.Models.ApplicationDbContext>(new MigrateDatabaseToLatestVersion<JLMCC.Models.ApplicationDbContext,  JLMCC.UserContextMigrations .Configuration>());
+            var dbMigrator1 = new DbMigrator(new JLMCC.UserContextMigrations.Configuration());
+            dbMigrator1.Update();
+
+            Database.SetInitializer<JLMCC.Models.JlmccContext>(new MigrateDatabaseToLatestVersion<JLMCC.Models.JlmccContext, JLMCC.DataContextMigrations.Configuration>());
+            var dbMigrator2 = new DbMigrator(new JLMCC.DataContextMigrations.Configuration());
+            dbMigrator2.Update();
 
         }
     }

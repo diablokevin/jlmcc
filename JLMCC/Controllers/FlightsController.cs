@@ -392,7 +392,10 @@ namespace JLMCC.Controllers
                     section_id = sections.Where(m => m.label == flight.PlaneNO).First().key,
                     text = string.Format("{0}{1}{2}", flight.DepartureCity, flight.FlightNO, flight.ArriveCity),
                     start_date = flight.ScheduleDeparture.ToString(),
-                    end_date = flight.ScheduleArrive.ToString()
+                    end_date = flight.ScheduleArrive.ToString(),
+                    PlaneNO = flight.PlaneNO,
+                    FlightId = flight.FlightId                    
+                    
                 };
                 timeLines.Add(timeline);
 
@@ -413,7 +416,15 @@ namespace JLMCC.Controllers
 
         public ActionResult Gantt()
         {
+
             return View();
+        }
+
+        public int ChangePlanNO(int flightId,string planeNO)
+        {
+            Flight flight = db.Flights.Find(flightId);
+            flight.PlaneNO = planeNO;
+            return db.SaveChanges();
         }
     }
 }

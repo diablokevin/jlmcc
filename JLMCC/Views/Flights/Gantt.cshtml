@@ -4,22 +4,26 @@
 }
 
 <h2>Gantt</h2>
-
+<div id="test"></div>
 @if (false)
 {
     <script src="~/Scripts/jquery-3.1.1.min.js"></script>
 }
 
-
+@*时间轴控件相关引用资源*@
 <script src="~/Scripts/dhtmlxscheduler/dhtmlxscheduler.js"></script>
 <script src="~/Scripts/dhtmlxscheduler/ext/dhtmlxscheduler_timeline.js"></script>
 <link href="~/Content/dhtmlxscheduler/dhtmlxscheduler.css" rel="stylesheet" />
 <script src="~/Scripts/dhtmlxscheduler/ext/dhtmlxscheduler_agenda_view.js"></script>
 <script src="~/Scripts/dhtmlxscheduler/locale/locale_cn.js"></script>
+@* 日期控件相关引用资源 *@
+<script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
+<script src="~/Content/widget/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
 <script>
     $(document).ready(function () {
-
-
+        //scheduler初始化
         scheduler.locale.labels.timeline_tab = "Timeline";
         scheduler.locale.labels.section_custom = "Section";
         scheduler.config.details_on_create = true;
@@ -28,6 +32,72 @@
         scheduler.config.drag_create = false;
         scheduler.config.drag_resize = false;
 
+        InitScheduler("", "");
+
+        //Drag Event
+        var dragged_event;
+        var flightId;
+        var planeNo_before, planeNo_after;
+        scheduler.attachEvent("onBeforeDrag", function (id, mode, e) {
+
+            dragged_event = scheduler.getEvent(id); //use it to get the object of the dragged event
+            flightId = dragged_event.FlightId;
+            planeNo_before = sections[dragged_event.section_id].label;
+            return true;
+        });
+
+        scheduler.attachEvent("onDragEnd", function () {
+            var event_obj = dragged_event;
+            planeNo_after = sections[dragged_event.section_id].label;
+
+            if (planeNo_before != planeNo_after) {
+                $.ajax({
+                    url: '/Flights/ChangePlanNO?flightId=' + flightId + '&planeNO=' + planeNo_after,
+                    type: "Get",
+                    async: false,
+                    // datatype: "json",
+                    success: function (data) {
+
+                    },
+                    error: function (event, xhr, options, exc) {
+                        alert("有错误发生！\nXMLHttpRequest:" + xhr + ";ajaxOptions:" + options + ";exception :" + exc);
+                    }
+                })
+            }
+        });
+
+
+        //日期控件初始化
+        $('#datetimepicker').datetimepicker({
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            minView: 2,
+            todayBtn: true,
+            todayHighlight: true
+
+
+        });
+
+
+        $('#datetimepickerinput').change(function () {
+            var date = $(this).val();
+            InitScheduler(date, "");
+
+
+        });
+
+
+    });
+
+    function InitScheduler(date,station) {
+
+        if (date == "")
+        {
+            date = new date();
+        }
+    
+
         //===============
         //Configuration
         //===============
@@ -35,7 +105,7 @@
         var sections;
         var timelines
         $.ajax({
-            url: '/Flights/GetFlightsToJson',
+            url: '/Flights/GetFlightsToJson?date='+date+'&station='+station,
             type: "Get",
             async: false,
             datatype: "json",
@@ -71,28 +141,52 @@
             { name: "time", height: 72, type: "time", map_to: "auto" }
         ];
 
-        scheduler.init('scheduler_here', new Date(), "timeline");
+        scheduler.init('scheduler_here', date, "timeline");
         scheduler.parse(timelines, "json");
 
-
-
-
-    });
-
-
+  
+    }
 
 </script>
+<div class="container">
 
-<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:800px;'>
-    <div class="dhx_cal_navline">
-        <div class="dhx_cal_prev_button">&nbsp;</div>
-        <div class="dhx_cal_next_button">&nbsp;</div>
-        <div class="dhx_cal_today_button"></div>
-        <div class="dhx_cal_date"></div>
-     
+    <div class="input-group date col-sm-4 " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+        <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@ViewBag.Date" readonly>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
     </div>
-    <div class="dhx_cal_header">
-    </div>
-    <div class="dhx_cal_data">
+
+
+    <input type="hidden" id="dtp_input2" value="" />
+    <ul id="myTab" class="nav nav-tabs myNav">
+        <li class="active" id="TabCGQ"><a href="#CGQ" data-toggle="tab">长春</a></li>
+        <li class="" id="TabYNJ"><a href="#YNJ" data-toggle="tab">延吉</a></li>
+        <li class="" id="TabNBS"><a href="#NBS" data-toggle="tab">白山</a></li>
+    </ul>
+    <div class="panel panel-primary">
+        @*<div class="tab-content">
+            <div class="tab-pane  in active " id="CGQ"></div>
+            <div class="tab-pane " id="YNJ"></div>
+            <div class="tab-pane " id="NBS"></div>
+
+        </div>*@
+        <div class="panel-body" id="panelcontent">
+            <div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:2000px;'>
+                <div class="dhx_cal_navline">
+                    <div class="dhx_cal_prev_button">&nbsp;</div>
+                    <div class="dhx_cal_next_button">&nbsp;</div>
+                    <div class="dhx_cal_today_button"></div>
+                    <div class="dhx_cal_date"></div>
+
+                </div>
+                <div class="dhx_cal_header">
+                </div>
+                <div class="dhx_cal_data">
+                </div>
+            </div>
+
+        </div>
+
     </div>
 </div>
+     

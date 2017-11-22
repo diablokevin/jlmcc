@@ -60,7 +60,7 @@ namespace JLMCC.Controllers
 
                 Views.Add(view);
              }
-            ViewBag.Date = date;
+            ViewBag.Date = daySelected.ToShortDateString();
             return View(Views);
         }
         //跟据参数读取航班数据，动态生成航班间隔
