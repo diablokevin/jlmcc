@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using JLMCC.Models;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace JLMCC.Controllers
 {
@@ -425,6 +427,28 @@ namespace JLMCC.Controllers
             Flight flight = db.Flights.Find(flightId);
             flight.PlaneNO = planeNO;
             return db.SaveChanges();
+        }
+        public ActionResult FlightInfo()
+        {
+            
+            return View(db.FlightInfos.ToList());
+        }
+
+
+        [HttpPost]
+        public int FlightInfo(string str)
+        {
+            //var sr = new StreamReader(Request.InputStream,System.Text.Encoding.UTF8);
+            var sr = new StreamReader(Request.InputStream);
+            var stream = sr.ReadToEnd();
+            FlightInfo info = new FlightInfo()
+            {
+                AlnCd = stream.ToString()
+            };
+            db.FlightInfos.Add(info);
+            db.SaveChanges();
+            return 200;
+
         }
     }
 }
