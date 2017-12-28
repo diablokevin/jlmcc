@@ -100,20 +100,20 @@
                         @switch (item.Type)
                         {
                             case JLMCC.Models.FlightIntervalType.航前:
-                                @item.NextFlight.DepartureStandNO;
+                                @item.NextFlight.DepStandNo;
                                 break;
                             case JLMCC.Models.FlightIntervalType.过站:
-                                @item.PreFlight.ArriveStandNO;
+                                @item.PreFlight.ArvStandNo;
                                 break;
                             case JLMCC.Models.FlightIntervalType.航后:
-                                @item.PreFlight.ArriveStandNO;
+                                @item.PreFlight.ArvStandNo;
                                 break;
 
                         }
                     </div>
                     <div class="panel-title col-xs-2 col-sm-2 col-lg-1 btn btn-success">
 
-                        @Html.ActionLink(item.Type.ToString(), "Enter","Services", new { PreFlightId = item.PreFlight == null ? -1 : item.PreFlight.FlightId, NextFlightId = item.NextFlight == null ? -1 : item.NextFlight.FlightId ,backUrl=Request.Url.ToString()},null)
+                        @Html.ActionLink(item.Type.ToString(), "Enter","Services", new { PreFlightId = item.PreFlight == null ? -1 : item.PreFlight.Id, NextFlightId = item.NextFlight == null ? -1 : item.NextFlight.Id ,backUrl=Request.Url.ToString()},null)
 
                     </div>
 
@@ -123,8 +123,33 @@
                         @if (item.PreFlight != null)
                         { 
                             <img src="~/Content/img/arrive.png" />
-                            <span>@item.PreFlight.ScheduleArrive.ToString("dd HH:mm")</span>
-                            <span>@item.PreFlight.FlightNO @item.PreFlight.DepartureCity - @item.PreFlight.ArriveCity</span>
+
+                            switch (item.PreFlight.ArvStsCd)
+                            {
+                                case "SCH":
+                                    <span>@item.PreFlight.SchArvDt.Value.ToString("dd HH:mm")</span>
+                                    break;
+                                case "ETA":
+                                    if (item.PreFlight.latestArvDt != null)
+                                    {
+                                        <span class="bg-danger text-danger"> @item.PreFlight.latestArvDt.Value.ToString("dd HH:mm")</span>
+                                    }
+                                    break;
+                                case "DWN":
+                                case "ON":
+                                    if (item.PreFlight.DwnTm != null)
+                                    {
+                                        <span class="bg-success text-success"> @item.PreFlight.DwnTm.Value.ToString("dd HH:mm")</span>
+                                    }
+                                    break;
+                                default:
+                                    <span>@item.PreFlight.SchArvDt.Value.ToString("dd HH:mm")</span>
+                                    break;
+
+                            }
+                            <span>@item.PreFlight.AlnCd</span>
+                            <span>@item.PreFlight.FltNr </span>
+                            <span>@item.PreFlight.ArcDepCityName - @item.PreFlight.ArcArvCityName</span>
 
                         }
                     </div>
@@ -132,8 +157,33 @@
                         @if (item.NextFlight != null)
                         {
                             <img src="~/Content/img/depature.png" />
-                            <span>@item.NextFlight.ScheduleDeparture.ToString("dd HH:mm")</span>
-                            <span>@item.NextFlight.FlightNO @item.NextFlight.DepartureCity - @item.NextFlight.ArriveCity</span>
+
+                            switch (item.NextFlight.DepStsCd)
+                            {
+                                case "SCH":
+                                    <span>@item.NextFlight.SchDepDt.Value.ToString("dd HH:mm")</span>
+                                    break;
+                                case "ETD":
+                                    if (item.NextFlight.LatestDepDt != null)
+                                    {
+                                        <span class="bg-danger text-danger"> @item.NextFlight.LatestDepDt.Value.ToString("dd HH:mm")</span>
+                                    }
+                                    break;
+                                case "OFF":
+                                case "AIR":
+                                    if (item.NextFlight.AirTm != null)
+                                    {
+                                        <span class="bg-success text-success"> @item.NextFlight.AirTm.Value.ToString("dd HH:mm")</span>
+                                    }
+                                    break;
+                                default:
+                                    <span>@item.NextFlight.SchDepDt.Value.ToString("dd HH:mm")</span>
+                                    break;
+
+                            }
+                            <span>@item.NextFlight.AlnCd</span>
+                            <span>@item.NextFlight.FltNr </span>
+                            <span>@item.NextFlight.ArcDepCityName - @item.NextFlight.ArcArvCityName</span>
 
                         }
                     </div>

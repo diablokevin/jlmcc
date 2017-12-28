@@ -12,10 +12,10 @@ namespace JLMCC.Models
         {
 
         }
-        public DbSet<Flight> Flights { get; set; }
+    
         public DbSet<Service> Services { get; set; }
 
-        public DbSet<FlightInfo> FlightInfos { get; set; }
+        public DbSet<FlightInfo> FlightInfoes { get; set; }
 
         //public DbSet<FlightInterval> FlightIntervals { get; set; }
 

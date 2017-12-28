@@ -22,37 +22,7 @@ namespace JLMCC.Controllers
         
             return View();
         }
-        
-        //待弃用，不需要ajax刷新航班数据，2017.9.27
-        public JsonResult GetFlight(string city,string arrOrDep)
-        {
-            switch (city)
-            {
-                case"CGQ":
-                    city = "长春";
-                    break;
-                case "YNJ":
-                    city = "延吉";
-                    break;
-                case "NBS":
-                    city = "长白山";
-                    break;
-            }
-          
-            if(arrOrDep=="arr")
-            {
-                return Json(db.Flights.Where(m => m.ArriveCity == city).ToList(), JsonRequestBehavior.AllowGet);
-            }
-            else if(arrOrDep == "dep")
-            {
-                return Json(db.Flights.Where(m => m.DepartureCity == city).ToList(), JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(db.Flights.ToList(), JsonRequestBehavior.AllowGet);
-            }
-            
-        }
+      
         // GET: Services/Details/5
         public ActionResult Details(int? id)
         {
@@ -71,7 +41,7 @@ namespace JLMCC.Controllers
         // GET: Services/Create
         public ActionResult Create()
         {
-            ViewBag.FlightId = new SelectList(db.Flights, "FlightId", "FlightNO");
+            ViewBag.FlightId = new SelectList(db.FlightInfoes, "Id", "FltNr");
             return View();
         }
 
@@ -89,7 +59,7 @@ namespace JLMCC.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.FlightId = new SelectList(db.Flights, "FlightId", "FlightNO", service.FlightIntervalId);
+            ViewBag.FlightId = new SelectList(db.FlightInfoes, "Id", "FltNr", service.FlightIntervalId);
             return View(service);
         }
 
@@ -105,7 +75,7 @@ namespace JLMCC.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.FlightId = new SelectList(db.Flights, "FlightId", "FlightNO", service.FlightIntervalId);
+            ViewBag.FlightId = new SelectList(db.FlightInfoes, "Id", "FltNr", service.FlightIntervalId);
             return View(service);
         }
 
@@ -122,7 +92,7 @@ namespace JLMCC.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.FlightId = new SelectList(db.Flights, "FlightId", "FlightNO", service.FlightIntervalId);
+            ViewBag.FlightId = new SelectList(db.FlightInfoes, "Id", "FltNr", service.FlightIntervalId);
             return View(service);
         }
 
@@ -193,10 +163,10 @@ namespace JLMCC.Controllers
             {
                 
                 flightIntervalView.Type = FlightIntervalType.航前;
-                flightIntervalView.NextFlight = db.Flights.Find(NextFlightId);
-                flightIntervalView.PlaneNO = flightIntervalView.NextFlight.PlaneNO;
-                flightIntervalView.PlaneType = flightIntervalView.NextFlight.PlaneType;
-                flightIntervalView.Station = flightIntervalView.NextFlight.DepartureCity;
+                flightIntervalView.NextFlight = db.FlightInfoes.Find(NextFlightId);
+                flightIntervalView.PlaneNO = flightIntervalView.NextFlight.LatestTailNr;
+                flightIntervalView.PlaneType = flightIntervalView.NextFlight.LatestEqpCd;
+                flightIntervalView.Station = flightIntervalView.NextFlight.ArcDepCityName;
                 
                 view.FlightInterval = flightIntervalView;
                 view.ServicesForNextFlight = db.Services.Where(m => m.FlightId == NextFlightId&&m.Type==ServiceType.ForDepature).ToList();
@@ -205,11 +175,11 @@ namespace JLMCC.Controllers
             else if (PreFlightId != -1 && NextFlightId != -1)
             {
                 flightIntervalView.Type = FlightIntervalType.过站;
-                flightIntervalView.PreFlight = db.Flights.Find(PreFlightId);
-                flightIntervalView.NextFlight = db.Flights.Find(NextFlightId);
-                flightIntervalView.PlaneNO = flightIntervalView.NextFlight.PlaneNO;
-                flightIntervalView.PlaneType = flightIntervalView.NextFlight.PlaneType;
-                flightIntervalView.Station = flightIntervalView.NextFlight.DepartureCity;
+                flightIntervalView.PreFlight = db.FlightInfoes.Find(PreFlightId);
+                flightIntervalView.NextFlight = db.FlightInfoes.Find(NextFlightId);
+                flightIntervalView.PlaneNO = flightIntervalView.NextFlight.LatestTailNr;
+                flightIntervalView.PlaneType = flightIntervalView.NextFlight.LatestEqpCd;
+                flightIntervalView.Station = flightIntervalView.NextFlight.ArcDepCityName;
 
                 view.FlightInterval = flightIntervalView;
                 view.ServicesForPreFlight = db.Services.Where(m => m.FlightId == PreFlightId && m.Type == ServiceType.ForArrival).ToList();
@@ -221,10 +191,10 @@ namespace JLMCC.Controllers
             else if (PreFlightId != -1 && NextFlightId == -1)
             {
                 flightIntervalView.Type = FlightIntervalType.航后;
-                flightIntervalView.PreFlight = db.Flights.Find(PreFlightId);
-                flightIntervalView.PlaneNO = flightIntervalView.PreFlight.PlaneNO;
-                flightIntervalView.PlaneType = flightIntervalView.PreFlight.PlaneType;
-                flightIntervalView.Station = flightIntervalView.PreFlight.ArriveCity;
+                flightIntervalView.PreFlight = db.FlightInfoes.Find(PreFlightId);
+                flightIntervalView.PlaneNO = flightIntervalView.PreFlight.LatestTailNr;
+                flightIntervalView.PlaneType = flightIntervalView.PreFlight.LatestEqpCd;
+                flightIntervalView.Station = flightIntervalView.PreFlight.ArcArvCityName;
                 view.FlightInterval = flightIntervalView;
                 view.ServicesForPreFlight = db.Services.Where(m => m.FlightId == PreFlightId).ToList();
                 

@@ -3,7 +3,7 @@ namespace JLMCC.UserContextMigrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class UserInitial : DbMigration
+    public partial class Init : DbMigration
     {
         public override void Up()
         {

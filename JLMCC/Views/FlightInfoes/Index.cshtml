@@ -1,0 +1,508 @@
+﻿@model IEnumerable<JLMCC.Models.FlightInfo>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("新建", "Create")
+</p>
+
+
+
+@if (false)
+{
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+}
+    @* 日期控件相关引用资源 *@
+    <script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+    <link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
+    <script src="~/Content/widget/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <script>
+
+
+        //跟据选择的日期刷新页面
+        function submitDate() {
+
+            var date = $('#d12').val();
+            window.location.href = "/FlightInfoes?date=" + date;
+
+        }
+
+
+        $(document).ready(function () {
+            getflight("长春", "arr");
+
+            $("#btn_arrInCGQ").click(function () { $("[name=flightrow][arr=长春]").show(); $("[name=flightrow][arr!=长春]").hide(); });
+            $("#TabCGQ").click(function () { getflight("长春", "arr"); $("#ChildTabCGQ li:eq(0) a").tab("show"); });
+            $("#btn_depFromCGQ").click(function () { getflight("长春", "dep"); });
+            $("#btn_arrInYNJ").click(function () { getflight("延吉", "arr"); });
+            $("#btn_depFromYNJ").click(function () { getflight("延吉", "dep"); });
+            $("#TabYNJ").click(function () { getflight("延吉", "arr"); $("#ChildTabYNJ li:eq(0) a").tab("show"); });
+            $("#btn_arrInNBS").click(function () { getflight("长白山", "arr"); });
+            $("#btn_depFromNBS").click(function () { getflight("长白山", "dep"); });
+            $("#TabNBS").click(function () { getflight("长白山", "arr"); $("#ChildTabNBS li:eq(0) a").tab("show"); });
+
+
+            //日期控件初始化
+            $('#datetimepicker').datetimepicker({
+                language: 'zh-CN',
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                minView: 2,
+                todayBtn: true,
+                todayHighlight: true
+
+
+            });
+            $('#datetimepickerinput').change(function () {
+                var date = $(this).val();
+                window.location.href = "/FlightInfoes?date=" + date;
+
+            });
+        }
+
+
+     )
+
+        function getflight(city, arrordep) {
+            $("[name=flightrow][" + arrordep + "=" + city + "]").show(); $("[name=flightrow][" + arrordep + "!=" + city + "]").hide();
+        }
+
+    </script>
+
+    <div class="container">
+        <div class="input-group date col-sm-5 " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+            <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@ViewBag.Date" readonly>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+        <input type="hidden" id="dtp_input2" value="" />
+        <br />
+        <div class="clear" />
+
+        <ul id="myTab" class="nav nav-tabs myNav">
+            <li class="active " id="TabCGQ"><a href="#CGQ" data-toggle="tab">长春</a></li>
+            <li class="" id="TabYNJ"><a href="#YNJ" data-toggle="tab">延吉</a></li>
+            <li class="" id="TabNBS"><a href="#NBS" data-toggle="tab">白山</a></li>
+
+        </ul>
+        <div class="panel panel-primary">
+            <div class="tab-content">
+                <div class="tab-pane   in active " id="CGQ">
+                    <ul id="ChildTabCGQ" class="nav nav-pills myNav ">
+                        <li class="active  text-center" id="btn_arrInCGQ"><a href="" data-toggle="pill">进港</a></li>
+                        <li class=" text-center" id="btn_depFromCGQ"><a href="" data-toggle="pill">出港</a></li>
+                    </ul>
+
+                </div>
+
+                <div class="tab-pane  " id="YNJ">
+                    <ul id="ChildTabYNJ" class="nav nav-pills myNav">
+                        <li class="active text-center" id="btn_arrInYNJ"><a href="" data-toggle="pill">进港</a></li>
+                        <li class="text-center" id="btn_depFromYNJ"><a href="" data-toggle="pill">出港</a></li>
+                    </ul>
+                </div>
+                <div class="tab-pane  " id="NBS">
+                    <ul id="ChildTabNBS" class="nav nav-pills myNav">
+                        <li class="active text-center" id="btn_arrInNBS"><a href="" data-toggle="pill">进港</a></li>
+                        <li class="text-center" id="btn_depFromNBS"><a href="" data-toggle="pill">出港</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+
+            <div class="panel-body" id="panelcontent">
+             
+            </div>
+        </div>
+
+    </div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SoflSeqNr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AlnCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FltDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FltNr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LegSeqNr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OpSuffix)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SvcType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SvcChnDesc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestTailNr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestEqpCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ScheduledEqpCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LegStsCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LegStsChn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AcfOper)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DopsTmst)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DeleteInd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CnclCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BranchCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepArpCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchDepCityName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepStsCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestDepArpCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArcDepCityName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepStandNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepGateNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchDepDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LocSchDepDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestDepDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LocLatestDepDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActualOffblocks)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TaxiOutTm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActualAirborne)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AirTm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LocAirTm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArvArpCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchArvCityName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestArvArpCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArcArvCityName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchArvDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LocSchArvDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.latestArvDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.locLatestArvDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArvStandNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArvGateNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArvStsCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DwnTm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LocDwnTm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActualLanding)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TaxiInTm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActualOnblocks)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestDlyCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DelayTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DlyCd1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DlyTm1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DlyReasonDetail01)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DlyReasonPublish01)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DlyCd2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DlyTm2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DlyReasonDetail02)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DlyReasonPublish02)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TailCompany)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr name="flightrow" arr="@item.ArcArvCityName" dep="@item.ArcDepCityName">
+            <td>
+                @Html.DisplayFor(modelItem => item.SoflSeqNr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AlnCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FltDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FltNr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LegSeqNr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OpSuffix)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SvcType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SvcChnDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatestTailNr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatestEqpCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScheduledEqpCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LegStsCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LegStsChn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AcfOper)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DopsTmst)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DeleteInd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CnclCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BranchCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepArpCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SchDepCityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepStsCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatestDepArpCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArcDepCityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepStandNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepGateNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SchDepDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocSchDepDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatestDepDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocLatestDepDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualOffblocks)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaxiOutTm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualAirborne)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AirTm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocAirTm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArvArpCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SchArvCityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatestArvArpCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArcArvCityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SchArvDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocSchArvDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.latestArvDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.locLatestArvDt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArvStandNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArvGateNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ArvStsCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DwnTm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocDwnTm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualLanding)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaxiInTm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualOnblocks)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatestDlyCd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DelayTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DlyCd1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DlyTm1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DlyReasonDetail01)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DlyReasonPublish01)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DlyCd2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DlyTm2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DlyReasonDetail02)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DlyReasonPublish02)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TailCompany)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

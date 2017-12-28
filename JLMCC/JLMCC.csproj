@@ -196,23 +196,19 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DepartmentsController.cs" />
-    <Compile Include="DataContextMigrations\201711010744369_DataInitial.cs" />
-    <Compile Include="DataContextMigrations\201711010744369_DataInitial.Designer.cs">
-      <DependentUpon>201711010744369_DataInitial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DataContextMigrations\201711230656517_FlightInfo.cs" />
-    <Compile Include="DataContextMigrations\201711230656517_FlightInfo.Designer.cs">
-      <DependentUpon>201711230656517_FlightInfo.cs</DependentUpon>
+    <Compile Include="Controllers\FlightInfoesController.cs" />
+    <Compile Include="DataContextMigrations\201712280542427_Init.cs" />
+    <Compile Include="DataContextMigrations\201712280542427_Init.Designer.cs">
+      <DependentUpon>201712280542427_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="DataContextMigrations\Configuration.cs" />
-    <Compile Include="UserContextMigrations\Configuration.cs" />
-    <Compile Include="UserContextMigrations\201711010745020_UserInitial.cs" />
-    <Compile Include="UserContextMigrations\201711010745020_UserInitial.Designer.cs">
-      <DependentUpon>201711010745020_UserInitial.cs</DependentUpon>
+    <Compile Include="UserContextMigrations\201712280337358_Init.cs" />
+    <Compile Include="UserContextMigrations\201712280337358_Init.Designer.cs">
+      <DependentUpon>201712280337358_Init.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserContextMigrations\Configuration.cs" />
     <None Include="Controllers\FlightIntervalsController.cs.temp" />
     <Compile Include="Controllers\FlightIntervalViewController.cs" />
-    <Compile Include="Controllers\FlightsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -224,7 +220,6 @@
     <Compile Include="Infrastructure\IdentityHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Department.cs" />
-    <Compile Include="Models\Flight.cs" />
     <Compile Include="Models\FlightInfo.cs" />
     <Compile Include="Models\FlightIntervalViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -536,8 +531,6 @@
     <Content Include="Content\widget\bootstrap-datetimepicker-master\sample in bootstrap v3\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\widget\bootstrap-datetimepicker-master\tests\README.md" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
-    <None Include="Properties\PublishProfiles\CustomProfile2.pubxml" />
     <None Include="Scripts\dhtmlxscheduler\dhtmlxscheduler.js.orgin" />
     <Content Include="Scripts\dhtmlxscheduler\dhtmlxscheduler.js" />
     <Content Include="Scripts\dhtmlxscheduler\ext\dhtmlxscheduler_active_links.js" />
@@ -858,22 +851,24 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Flights\Index.cshtml" />
-    <Content Include="Views\Flights\Multi.cshtml" />
     <Content Include="Views\Services\Create.cshtml" />
     <Content Include="Views\Services\Delete.cshtml" />
     <Content Include="Views\Services\Details.cshtml" />
     <Content Include="Views\Services\Edit.cshtml" />
     <Content Include="Views\FlightIntervalView\Index.cshtml" />
     <Content Include="Views\FlightIntervalView\IndexWithServices.cshtml" />
-    <Content Include="Views\Flights\Gantt.cshtml" />
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\Role\Create.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Account\Create.cshtml" />
-    <Content Include="Views\Flights\FlightInfo.cshtml" />
+    <Content Include="Views\FlightInfoes\Create.cshtml" />
+    <Content Include="Views\FlightInfoes\Delete.cshtml" />
+    <Content Include="Views\FlightInfoes\Details.cshtml" />
+    <Content Include="Views\FlightInfoes\Edit.cshtml" />
+    <Content Include="Views\FlightInfoes\Index.cshtml" />
+    <Content Include="Views\FlightInfoes\Gantt.cshtml" />
     <None Include="Views\Services\Index.cshtml" />
     <Content Include="Views\Services\Enter.cshtml" />
     <Content Include="Views\Home\Settings.cshtml" />
@@ -889,24 +884,18 @@
     <Content Include="Views\SubDepartments\Details.cshtml" />
     <Content Include="Views\SubDepartments\Edit.cshtml" />
     <Content Include="Views\SubDepartments\Index.cshtml" />
-    <Content Include="Views\Flights\Create.cshtml" />
-    <Content Include="Views\Flights\Edit.cshtml" />
-    <Content Include="Views\Flights\Delete.cshtml" />
-    <Content Include="Views\Flights\Details.cshtml" />
     <Content Include="Views\FlightIntervals\Create.cshtml" />
     <Content Include="Views\FlightIntervals\Delete.cshtml" />
     <Content Include="Views\FlightIntervals\Details.cshtml" />
     <Content Include="Views\FlightIntervals\Edit.cshtml" />
     <None Include="Views\FlightIntervals\Index.cshtml.temp" />
     <None Include="Views\FlightIntervals\Index.cshtml.old" />
-    <None Include="Views\Flights\Index.cshtml.old" />
     <None Include="Views\Services\Enter.cshtml.old" />
     <None Include="Views\Services\Index.cshtml.old" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Migrations\DataContextMigrations\" />
-    <Folder Include="Migrations\UserContextMigrations\" />
+    <Folder Include="Views\FlightinfoIntervalsView\" />
     <Folder Include="Views\Roles\" />
   </ItemGroup>
   <ItemGroup>
@@ -922,14 +911,11 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DataContextMigrations\201711010744369_DataInitial.resx">
-      <DependentUpon>201711010744369_DataInitial.cs</DependentUpon>
+    <EmbeddedResource Include="DataContextMigrations\201712280542427_Init.resx">
+      <DependentUpon>201712280542427_Init.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DataContextMigrations\201711230656517_FlightInfo.resx">
-      <DependentUpon>201711230656517_FlightInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserContextMigrations\201711010745020_UserInitial.resx">
-      <DependentUpon>201711010745020_UserInitial.cs</DependentUpon>
+    <EmbeddedResource Include="UserContextMigrations\201712280337358_Init.resx">
+      <DependentUpon>201712280337358_Init.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

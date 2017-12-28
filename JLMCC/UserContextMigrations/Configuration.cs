@@ -12,7 +12,7 @@ namespace JLMCC.UserContextMigrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             MigrationsDirectory = @"UserContextMigrations";
         }
 

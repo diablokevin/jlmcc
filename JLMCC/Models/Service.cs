@@ -23,7 +23,7 @@ namespace JLMCC.Models
         public int FlightIntervalId { get; set; }
 
         [System.ComponentModel.DataAnnotations.Schema.ForeignKey("FlightId")]
-        public virtual Flight Flight { get; set; }
+        public virtual FlightInfo Flightinfo { get; set; }
 
     }
 }

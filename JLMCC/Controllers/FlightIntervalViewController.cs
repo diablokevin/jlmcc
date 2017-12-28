@@ -19,13 +19,14 @@ namespace JLMCC.Controllers
             DateTime daySelected = new DateTime();
             if (date == null||date=="")
             {
-                daySelected = DateTime.Now;
+                daySelected = DateTime.Today;
 
             }
             else
             {
                 daySelected = Convert.ToDateTime(date);
             }
+
 
             List<FlightIntervalViewModel> flightIntervals = GetFlightInterval(daySelected, station);
             ViewBag.Date = date;
@@ -38,7 +39,7 @@ namespace JLMCC.Controllers
             DateTime daySelected = new DateTime();
             if (date == null || date == "")
             {
-                daySelected = DateTime.Now;
+                daySelected = DateTime.Today;
 
             }
             else
@@ -54,8 +55,8 @@ namespace JLMCC.Controllers
                 FlightIntervalAndSerivcesViewModel view = new FlightIntervalAndSerivcesViewModel()
                 {
                     FlightInterval = item,
-                    ServicesForPreFlight = item.PreFlight==null?null: db.Services.Where(m => m.FlightId == item.PreFlight.FlightId && m.Type == ServiceType.ForArrival).ToList(),
-                    ServicesForNextFlight = item.NextFlight == null ? null : db.Services.Where(m => m.FlightId == item.NextFlight.FlightId && m.Type == ServiceType.ForDepature).ToList()
+                    ServicesForPreFlight = item.PreFlight==null?null: db.Services.Where(m => m.FlightId == item.PreFlight.Id && m.Type == ServiceType.ForArrival).ToList(),
+                    ServicesForNextFlight = item.NextFlight == null ? null : db.Services.Where(m => m.FlightId == item.NextFlight.Id && m.Type == ServiceType.ForDepature).ToList()
                  };
 
                 Views.Add(view);
@@ -68,33 +69,33 @@ namespace JLMCC.Controllers
         {
         
 
-            FlightsController FlightsController = new FlightsController();
-
-            List<Flight> flights =FlightsController.GetFlightsByDate(daySelected);
+            FlightInfoesController FlightinfoesController = new FlightInfoesController();
+            //获取所选日期的航班新信息，去掉航班状态代码为C(取消)和DEL(改直飞)的航班
+            List<FlightInfo> flightinfoes = FlightinfoesController.GetFlightInfoesByDate(daySelected).Where(m=>m.LegStsCd != "C"&&m.LegStsCd != "DEL").ToList();
             if (station == null) { station = "长春"; }
-            List<Flight> flightOrdered = flights.OrderBy(m => m.PlaneNO).ThenBy(m => m.ScheduleDeparture).ToList();
+            List<FlightInfo> flightinfoesOrdered = flightinfoes.OrderBy(m => m.LatestTailNr).ThenBy(m => m.SchDepDt.Value).ToList();
             List<FlightIntervalViewModel> flightIntervalViews = new List<FlightIntervalViewModel>();
-            for (int i = 0; i < flightOrdered.Count; i++)
+            for (int i = 0; i < flightinfoesOrdered.Count; i++)
             {
 
-                if (flightOrdered[i].DepartureCity == station)  //出发为本场时，无前序航班为为航前，有前序航班为过站
+                if (flightinfoesOrdered[i].ArcDepCityName == station)  //出发为本场时，无前序航班为为航前，有前序航班为过站
                 {
                     FlightIntervalViewModel flightIntervalView = new FlightIntervalViewModel()
                     {
-                        PlaneNO = flightOrdered[i].PlaneNO,
-                        PlaneType = flightOrdered[i].PlaneType,
-                        NextFlight = flightOrdered[i],
+                        PlaneNO = flightinfoesOrdered[i].LatestTailNr,
+                        PlaneType = flightinfoesOrdered[i].LatestEqpCd,
+                        NextFlight = flightinfoesOrdered[i],
                         Station = station
                     };
-                    if (i == 0 || (flightOrdered[i - 1].PlaneNO != flightOrdered[i].PlaneNO))
+                    if (i == 0 || (flightinfoesOrdered[i - 1].LatestTailNr != flightinfoesOrdered[i].LatestTailNr))
                     {
                         flightIntervalView.Type = FlightIntervalType.航前;
 
                     }
-                    else if (flightOrdered[i - 1].PlaneNO == flightOrdered[i].PlaneNO && flightOrdered[i - 1].ArriveCity == station)
+                    else if (flightinfoesOrdered[i - 1].LatestTailNr == flightinfoesOrdered[i].LatestTailNr && flightinfoesOrdered[i - 1].ArcArvCityName == station)
                     {
                         flightIntervalView.Type = FlightIntervalType.过站;
-                        flightIntervalView.PreFlight = flightOrdered[i - 1];
+                        flightIntervalView.PreFlight = flightinfoesOrdered[i - 1];
                     }
 
                     flightIntervalViews.Add(flightIntervalView);
@@ -102,15 +103,15 @@ namespace JLMCC.Controllers
 
 
                 }
-                else if (flightOrdered[i].ArriveCity == station)  //落地为本场时，无后序航班为航后，有后序航班为过站，航班间隔将在后序航班中创建
+                else if (flightinfoesOrdered[i].ArcArvCityName == station)  //落地为本场时，无后序航班为航后，有后序航班为过站，航班间隔将在后序航班中创建
                 {
-                    if (i == (flightOrdered.Count - 1) || flightOrdered[i].PlaneNO != flightOrdered[i + 1].PlaneNO)
+                    if (i == (flightinfoesOrdered.Count - 1) || flightinfoesOrdered[i].LatestTailNr != flightinfoesOrdered[i + 1].LatestTailNr)
                     {
                         FlightIntervalViewModel flightIntervalView = new FlightIntervalViewModel()
                         {
-                            PlaneNO = flightOrdered[i].PlaneNO,
-                            PlaneType = flightOrdered[i].PlaneType,
-                            PreFlight = flightOrdered[i],
+                            PlaneNO = flightinfoesOrdered[i].LatestTailNr,
+                            PlaneType = flightinfoesOrdered[i].LatestEqpCd,
+                            PreFlight = flightinfoesOrdered[i],
                             Station = station,
                             Type = FlightIntervalType.航后
                         };
@@ -123,7 +124,7 @@ namespace JLMCC.Controllers
 
            // ViewBag.Date = date;
 
-            return flightIntervalViews.OrderBy(i => i.PreFlight == null ? i.NextFlight.ScheduleDeparture : i.PreFlight.ScheduleArrive).ToList();
+            return flightIntervalViews.OrderBy(i => i.PreFlight == null ? i.NextFlight.SchDepDt : i.PreFlight.SchArvDt).ToList();
         }
 
         public JsonResult GetFlightIntervalToJson(string date, string station)
@@ -131,7 +132,7 @@ namespace JLMCC.Controllers
             DateTime daySelected = new DateTime();
             if (date == null || date == "")
             {
-                daySelected = DateTime.Now;
+                daySelected = DateTime.Today;
 
             }
             else

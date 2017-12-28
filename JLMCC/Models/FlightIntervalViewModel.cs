@@ -6,6 +6,13 @@ using System.Web;
 
 namespace JLMCC.Models
 {
+    public enum FlightIntervalType
+    {
+        航前,
+        过站,
+        航后
+
+    }
     public class FlightIntervalViewModel
     {
         
@@ -20,9 +27,9 @@ namespace JLMCC.Models
             public FlightIntervalType Type { get; set; }
 
             [Display(Name = "前序航班")]
-            public  Flight PreFlight { get; set; }
+            public  FlightInfo PreFlight { get; set; }
             [Display(Name = "后序航班")]
-            public  Flight NextFlight { get; set; }
+            public  FlightInfo NextFlight { get; set; }
             [Display(Name = "机场")]
             public string Station { get; set; }
        

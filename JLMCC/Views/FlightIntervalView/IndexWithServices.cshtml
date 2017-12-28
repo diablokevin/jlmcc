@@ -104,7 +104,7 @@
                         @Html.DisplayNameFor(model => model.FlightInterval.Type)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.ArriveStandNO)
+                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.ArvStandNo)
                     </th>
 
                     <th>
@@ -112,16 +112,21 @@
                     </th>
 
                     <th>
-                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.ScheduleArrive)
+                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.SchArvDt)
+                    </th>
+                     <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.DwnTm)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.FlightInterval.NextFlight)
                     </th>
 
                     <th>
-                        @Html.DisplayNameFor(model => model.FlightInterval.NextFlight.ScheduleDeparture)
+                        @Html.DisplayNameFor(model => model.FlightInterval.NextFlight.SchDepDt)
                     </th>
-
+                    <th>
+                        @Html.DisplayNameFor(model => model.FlightInterval.NextFlight.AirTm)
+                    </th>
                     <th>
                         接机人员
                     </th>
@@ -161,13 +166,13 @@
                             @switch (item.FlightInterval.Type)
                 {
                     case JLMCC.Models.FlightIntervalType.航前:
-                                    @item.FlightInterval.NextFlight.DepartureStandNO;
+                                    @item.FlightInterval.NextFlight.DepStandNo;
                         break;
                     case JLMCC.Models.FlightIntervalType.过站:
-                                    @item.FlightInterval.PreFlight.ArriveStandNO;
+                                    @item.FlightInterval.PreFlight.ArvStandNo;
                         break;
                     case JLMCC.Models.FlightIntervalType.航后:
-                                    @item.FlightInterval.PreFlight.ArriveStandNO;
+                                    @item.FlightInterval.PreFlight.ArvStandNo;
                         break;
 
                 }
@@ -177,32 +182,101 @@
 
                             @if (item.FlightInterval.PreFlight != null)
                 {
-                                <a href="@Url.Action("Details", "Flights", new { id = item.FlightInterval.PreFlight.FlightId })">
-                                    <p>@item.FlightInterval.PreFlight.FlightNO @item.FlightInterval.PreFlight.DepartureCity - @item.FlightInterval.PreFlight.ArriveCity</p>
+                                <a href="@Url.Action("Details", "Flightinfoes", new { id = item.FlightInterval.PreFlight.Id })">
+                                    <p>
+                                        <span>@item.FlightInterval.PreFlight.AlnCd</span>
+                                        <span>@item.FlightInterval.PreFlight.FltNr </span>
+                                        <span>@item.FlightInterval.PreFlight.ArcDepCityName - @item.FlightInterval.PreFlight.ArcArvCityName</span>
+                                    </p>
 
                                 </a>}
                         </td>
 
                         <td class="text-nowrap">
                             @if (item.FlightInterval.PreFlight != null)
-                {
-                                <p> @item.FlightInterval.PreFlight.ScheduleDeparture.ToString("dd HH:mm")</p>
+                            {
+                                <p> @item.FlightInterval.PreFlight.SchArvDt.Value.ToString("dd HH:mm")</p>
                             }
+                        </td>
+                        <td class="text-nowrap">
+                            @if (item.FlightInterval.PreFlight != null)
+                            {
+                                switch (item.FlightInterval.PreFlight.ArvStsCd)
+                                {
+                                    case "SCH":
+                                        break;
+                                    case "ETA":
+                                        if (item.FlightInterval.PreFlight.latestArvDt != null)
+                                        {
+                                            <p class="bg-danger text-danger" > @item.FlightInterval.PreFlight.latestArvDt.Value.ToString("dd HH:mm")</p>
+                                        }
+                                        break;
+                                    case "DWN":
+                                    case "ON":
+                                        if (item.FlightInterval.PreFlight.DwnTm != null)
+                                        {
+                                            <p class="bg-success text-success"> @item.FlightInterval.PreFlight.DwnTm.Value.ToString("dd HH:mm")</p>
+                                        }
+                                        break;
+                                    default:
+                                        break;
+
+                                }
+
+
+                            }
+                                   
+                            
                         </td>
                         <td>
                             @if (item.FlightInterval.NextFlight != null)
                 {
-                                <a href="@Url.Action("Details", "Flights", new { id = item.FlightInterval.NextFlight.FlightId })">
-                                    <p>@item.FlightInterval.NextFlight.FlightNO @item.FlightInterval.NextFlight.DepartureCity - @item.FlightInterval.NextFlight.ArriveCity</p>
+                                <a href="@Url.Action("Details", "Flightinfoes", new { id = item.FlightInterval.NextFlight.Id })">
+                                    <p>
+                                        <span>@item.FlightInterval.NextFlight.AlnCd</span>
+                                        <span>@item.FlightInterval.NextFlight.FltNr </span>
+                                        <span>@item.FlightInterval.NextFlight.ArcDepCityName - @item.FlightInterval.NextFlight.ArcArvCityName</span>
+                                    </p>
                                 </a>}
                         </td>
 
                         <td class="text-nowrap">
                             @if (item.FlightInterval.NextFlight != null)
-                {
-                                <p> @item.FlightInterval.NextFlight.ScheduleDeparture.ToString("dd HH:mm")</p>
+                                    {
+                                <p> @item.FlightInterval.NextFlight.SchDepDt.Value.ToString("dd HH:mm")</p>
                             }
                         </td>
+                        <td class="text-nowrap">
+                            @if (item.FlightInterval.NextFlight != null)
+                            {
+                                switch (item.FlightInterval.NextFlight.DepStsCd)
+                                {
+                                    case "SCH":
+                                        break;
+                                    case "ETD":
+                                        if (item.FlightInterval.NextFlight.LatestDepDt != null)
+                                        {
+                                            <p class="bg-danger text-danger"> @item.FlightInterval.NextFlight.LatestDepDt.Value.ToString("dd HH:mm")</p>
+                                        }
+                                        break;
+                                    case "OFF":
+                                    case "AIR":
+                                        if (item.FlightInterval.NextFlight.AirTm != null)
+                                        {
+                                            <p class="bg-success text-success"> @item.FlightInterval.NextFlight.AirTm.Value.ToString("dd HH:mm")</p>
+                                        }
+                                        break;
+                                    default:
+                                        break;
+
+                                }
+
+
+                            }
+
+
+                        </td>
+
                         <td align="center">
                             @{
                                 if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航后 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
@@ -211,11 +285,11 @@
                                     {
                                         <span class="text-success bg-success">OK</span>
 
-                                    }
+                                }
                                     else
                                     {
                                         <span class="text-danger bg-danger">NO</span>
-                                    }
+                            }
                                 }
                                 else
                                 {
@@ -353,7 +427,7 @@
                         @{
                             if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
                             {
-                                <td id="td_@item.FlightInterval.NextFlight.FlightId" align="center">
+                                <td id="td_@item.FlightInterval.NextFlight.Id" align="center">
                                     @if (item.ServicesForNextFlight.Where(m => m.Content == "调度放行").Count() > 0)
                                     {
 
@@ -369,7 +443,7 @@
                                     }
                                     else
                                     {
-                                        <button id="btn_@item.FlightInterval.NextFlight.FlightId" class="btn btn-success" onclick="submitService(@item.FlightInterval.NextFlight.FlightId,'@HttpUtility.UrlEncode("调度放行",System.Text.Encoding.UTF8)',@((int)JLMCC.Models.ServiceType.ForDepature))">放行</button>
+                                        <button id="btn_@item.FlightInterval.NextFlight.Id" class="btn btn-success" onclick="submitService(@item.FlightInterval.NextFlight.Id,'@HttpUtility.UrlEncode("调度放行",System.Text.Encoding.UTF8)',@((int)JLMCC.Models.ServiceType.ForDepature))">放行</button>
                                     }
                                 </td>
                             }
@@ -386,7 +460,7 @@
 
 
                         <td>
-                            @Html.ActionLink("详情", "Enter", "Services", new { PreFlightId = item.FlightInterval.PreFlight == null ? -1 : item.FlightInterval.PreFlight.FlightId, NextFlightId = item.FlightInterval.NextFlight == null ? -1 : item.FlightInterval.NextFlight.FlightId , backUrl = Request.Url.ToString() }, null)
+                            @Html.ActionLink("详情", "Enter", "Services", new { PreFlightId = item.FlightInterval.PreFlight == null ? -1 : item.FlightInterval.PreFlight.Id, NextFlightId = item.FlightInterval.NextFlight == null ? -1 : item.FlightInterval.NextFlight.Id , backUrl = Request.Url.ToString() }, null)
                         </td>
                     </tr>
                             }

@@ -1,0 +1,448 @@
+﻿@model JLMCC.Models.FlightInfo
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>FlightInfo</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.SoflSeqNr)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SoflSeqNr)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AlnCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AlnCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FltDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FltDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FltNr)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FltNr)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LegSeqNr)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LegSeqNr)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OpSuffix)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OpSuffix)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SvcType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SvcType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SvcChnDesc)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SvcChnDesc)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LatestTailNr)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LatestTailNr)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LatestEqpCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LatestEqpCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ScheduledEqpCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ScheduledEqpCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LegStsCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LegStsCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LegStsChn)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LegStsChn)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AcfOper)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AcfOper)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DopsTmst)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DopsTmst)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeleteInd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeleteInd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CnclCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CnclCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DepArpCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DepArpCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SchDepCityName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SchDepCityName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DepStsCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DepStsCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LatestDepArpCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LatestDepArpCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArcDepCityName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArcDepCityName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DepStandNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DepStandNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DepGateNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DepGateNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SchDepDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SchDepDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocSchDepDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocSchDepDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LatestDepDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LatestDepDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocLatestDepDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocLatestDepDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ActualOffblocks)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ActualOffblocks)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaxiOutTm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaxiOutTm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ActualAirborne)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ActualAirborne)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AirTm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AirTm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocAirTm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocAirTm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArvArpCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArvArpCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SchArvCityName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SchArvCityName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LatestArvArpCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LatestArvArpCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArcArvCityName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArcArvCityName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SchArvDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SchArvDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocSchArvDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocSchArvDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.latestArvDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.latestArvDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.locLatestArvDt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.locLatestArvDt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArvStandNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArvStandNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArvGateNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArvGateNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArvStsCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArvStsCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DwnTm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DwnTm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LocDwnTm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LocDwnTm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ActualLanding)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ActualLanding)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaxiInTm)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaxiInTm)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ActualOnblocks)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ActualOnblocks)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LatestDlyCd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LatestDlyCd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DelayTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DelayTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TailCompany)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TailCompany)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
