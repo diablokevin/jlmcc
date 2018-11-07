@@ -332,6 +332,7 @@ namespace JLMCC.Controllers
 
                 ViewBag.ContentString = content;
                 List<string> t = content.Split('\r', '\n').ToList();
+                t.RemoveAll(s => s == "");    //去掉空项目
                 ViewBag.Content = t;
                 ViewBag.Count = t.Count;
                 int skipCount = 0;
@@ -434,6 +435,8 @@ namespace JLMCC.Controllers
 
                 ViewBag.ContentString = content;
                 List<string> t = content.Split('\r', '\n').ToList();
+                t.RemoveAll(s => s == "");   //去掉空项目
+
                 ViewBag.Content = t;
                 ViewBag.Count = t.Count;
                 int skipCount = 0;
@@ -442,71 +445,76 @@ namespace JLMCC.Controllers
                 if (action == "提交")
                 {
                     foreach (string item in t)
-                    {
-                        if (!string.IsNullOrEmpty(item))
+                    {   //厦航数据格式整体改变，改为使用“航班信息”表作为数据来源 2018.11.7
+                        try
                         {
-                            var array = item.Split('\t');
-                            if (array[1].Trim().Substring(0, 2) != "CZ"&& !array[0].Contains("性质") && !array[0].Contains("延误") && !array[22].Contains("取消"))  //不是南航的航班或者取消的航班或者是表格第一行，不进行导入
+                            if (!string.IsNullOrEmpty(item))
                             {
-
-                                FlightInfo flightInfo = new FlightInfo();
-                                flightInfo.AlnCd = array[1].Trim().Substring(0,2);
-                                flightInfo.AcfOper = flightInfo.AlnCd;
-                                flightInfo.SvcChnDesc = array[0];
-                                flightInfo.FltDt = Convert.ToDateTime(array[29].Trim());
-                                flightInfo.FltNr = array[1].Trim().Substring(2);
-                                flightInfo.LatestEqpCd = array[2].Trim();
-                                flightInfo.LatestTailNr = array[3].Trim();
-                                flightInfo.ArcDepCityName = array[6].Trim();
-                                flightInfo.SchDepCityName = array[6].Trim();
-                                flightInfo.SchDepDt = Convert.ToDateTime(array[29] + " " + array[7].Trim());
-
-                                flightInfo.ArcArvCityName = array[16].Trim();
-                                flightInfo.SchArvCityName = array[16].Trim();
-                                flightInfo.SchArvDt = Convert.ToDateTime(array[29] + " " + array[15].Replace('+', ' ').Trim());
-                                if (flightInfo.SchArvDt < flightInfo.SchDepDt)
+                                var array = item.Split('\t');
+                                if (array[3].Trim().Substring(0, 2) != "CZ" && !array[2].Contains("性质") && !array[2].Contains("延误"))  //不是南航的航班或者取消的航班或者是表格第一行，不进行导入
                                 {
-                                    flightInfo.SchArvDt = flightInfo.SchArvDt.Value.AddDays(1);
-                                }
+
+                                    FlightInfo flightInfo = new FlightInfo();
+                                    flightInfo.AlnCd = array[3].Trim().Substring(0, 2);
+                                    flightInfo.AcfOper = flightInfo.AlnCd;
+                                    flightInfo.SvcChnDesc = array[2];
+                                    flightInfo.FltDt = Convert.ToDateTime(array[0].Trim());
+                                    flightInfo.FltNr = array[3].Trim().Substring(2);
+                                    flightInfo.LatestEqpCd = array[4].Trim();
+                                    flightInfo.LatestTailNr = array[5].Trim();
+                                    flightInfo.ArcDepCityName = array[7].Trim();
+                                    flightInfo.SchDepCityName = array[7].Trim();
+                                    flightInfo.SchDepDt = Convert.ToDateTime(array[0] + " " + array[8].Trim());
+
+                                    flightInfo.ArcArvCityName = array[14].Trim();
+                                    flightInfo.SchArvCityName = array[14].Trim();
+                                    flightInfo.SchArvDt = Convert.ToDateTime(array[0] + " " + array[13].Replace('+', ' ').Trim());
+                                    if (flightInfo.SchArvDt < flightInfo.SchDepDt)
+                                    {
+                                        flightInfo.SchArvDt = flightInfo.SchArvDt.Value.AddDays(1);
+                                    }
 
 
 
 
-                                var flightInfoinDb = from f in db.FlightInfoes
-                                                     where f.AlnCd == flightInfo.AlnCd &&
-                                                           f.AcfOper == flightInfo.AcfOper &&
-                                                           f.FltDt == flightInfo.FltDt &&
-                                                           f.FltNr == flightInfo.FltNr &&
-                                                           f.LatestEqpCd == flightInfo.LatestEqpCd &&
-                                                           f.LatestTailNr == flightInfo.LatestTailNr &&
-                                                           f.ArcDepCityName == flightInfo.ArcDepCityName &&
-                                                           f.SchDepCityName == flightInfo.SchDepCityName &&
-                                                           f.SchDepDt == flightInfo.SchDepDt &&
-                                                           f.ArcArvCityName == flightInfo.ArcArvCityName &&
-                                                           f.SchArvCityName == flightInfo.SchArvCityName &&
-                                                           f.SchArvDt == flightInfo.SchArvDt
-                                                     select f;
+                                    var flightInfoinDb = from f in db.FlightInfoes
+                                                         where f.AlnCd == flightInfo.AlnCd &&
+                                                               f.AcfOper == flightInfo.AcfOper &&
+                                                               f.FltDt == flightInfo.FltDt &&
+                                                               f.FltNr == flightInfo.FltNr &&
+                                                               f.LatestEqpCd == flightInfo.LatestEqpCd &&
+                                                               f.LatestTailNr == flightInfo.LatestTailNr &&
+                                                               f.ArcDepCityName == flightInfo.ArcDepCityName &&
+                                                               f.SchDepCityName == flightInfo.SchDepCityName &&
+                                                               f.SchDepDt == flightInfo.SchDepDt &&
+                                                               f.ArcArvCityName == flightInfo.ArcArvCityName &&
+                                                               f.SchArvCityName == flightInfo.SchArvCityName &&
+                                                               f.SchArvDt == flightInfo.SchArvDt
+                                                         select f;
 
-                                if (flightInfoinDb.Count() == 0)
-                                {
-                                    db.FlightInfoes.Add(flightInfo);
+                                    if (flightInfoinDb.Count() == 0)
+                                    {
+                                        db.FlightInfoes.Add(flightInfo);
+
+                                    }
+                                    else
+                                    {
+                                        skipCount += 1;
+                                    }
+
 
                                 }
                                 else
                                 {
                                     skipCount += 1;
+
                                 }
-
-
-                            }
-                            else
-                            {
-                                skipCount += 1;
-
                             }
                         }
-                       
-                }
+                        catch { skipCount += 1; }
+
+
+                    }
                     submitCount = db.SaveChanges();
 
 
