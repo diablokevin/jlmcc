@@ -5,33 +5,14 @@
 
 <h1 class="h1">运行管控</h1>
 <hr />
+
 <div class="myitem">
     <a href="@Url.Action("IndexWithServices", "FlightIntervalView")">
         <img src="~/Content/img/调度.png" />
         </a>
         <br />
         <p class="panel-title">调度视图</p>
-
 </div>
-<div class="myitem">
-    <a href="@Url.Action("Index", "FlightIntervalView")">
-        <img src="~/Content/img/工作者.png" />
-    </a>
-    <br />
-        <p class="panel-title">工作者视图</p>
-</div>
-
-
-<div class="myitem">
-    <a href="@Url.Action("Index", "Flightinfoes")">
-        <img src="~/Content/img/航班管理.png" />
-    </a>
-    <br />
-    <p class="panel-title">航班管理</p>
-</div>
-
-<div class="clear"></div>
-
 <div class="myitem">
     <a href="@Url.Action("Gantt", "Flightinfoes")">
         <img src="~/Content/img/航班管理.png" />
@@ -40,4 +21,44 @@
     <p class="panel-title">航班甘特图</p>
 </div>
 
+<div class="myitem">
+    <a href="@Url.Action("Index", "FlightIntervalView")">
+        <img src="~/Content/img/工作者.png" />
+    </a>
+    <br />
+        <p class="panel-title">工作者视图</p>
+</div>
+
 <div class="clear"></div>
+
+@if(User.IsInRole("调度")|| User.IsInRole("管理员"))
+{ 
+<h1 class="h1">航班管理</h1>
+<hr />
+<div class="myitem">
+    <a href="@Url.Action("Index", "Flightinfoes")">
+        <img src="~/Content/img/csair128.png" />
+    </a>
+    <br />
+  
+</div>
+
+<div class="myitem">
+    <a href="@Url.Action("SCIndex", "Flightinfoes")">
+        <img src="~/Content/img/sichuanair128.png" />
+    </a>
+    <br />
+  
+</div>
+
+<div class="myitem">
+    <a href="@Url.Action("MFIndex", "Flightinfoes")">
+        <img src="~/Content/img/xiamenair128.png" />
+    </a>
+    <br />
+ 
+</div>
+<div class="clear"></div>
+}
+
+

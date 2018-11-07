@@ -32,15 +32,59 @@ namespace JLMCC.Controllers
             {
                 daySelected = Convert.ToDateTime(date);
             }
-            List<FlightInfo> flightInfoes = GetFlightInfoesByDate(daySelected);
-                ViewBag.Date = date;
+            List<FlightInfo> flightInfoes = GetFlightInfoes(daySelected, "CZ");
+            ViewBag.Date = date;
             return View(flightInfoes);
         }
 
-        public List<FlightInfo> GetFlightInfoesByDate(DateTime daySelected)
+        public ActionResult SCIndex(string date)
+        {
+            DateTime daySelected = new DateTime();
+
+            if (date == null || date == string.Empty)
+            {
+                daySelected = DateTime.Today;
+
+            }
+            else
+            {
+                daySelected = Convert.ToDateTime(date);
+            }
+            List<FlightInfo> flightInfoes = GetFlightInfoes(daySelected, "3U");
+            ViewBag.Date = date;
+            return View(flightInfoes);
+        }
+
+        public ActionResult MFIndex(string date)
+        {
+            DateTime daySelected = new DateTime();
+
+            if (date == null || date == string.Empty)
+            {
+                daySelected = DateTime.Today;
+
+            }
+            else
+            {
+                daySelected = Convert.ToDateTime(date);
+            }
+            List<FlightInfo> flightInfoes = GetFlightInfoes(daySelected, "MF");
+            ViewBag.Date = date;
+            return View(flightInfoes);
+        }
+        //只通过日期筛选
+        public List<FlightInfo> GetFlightInfoes(DateTime daySelected)
         {
             DateTime nextday = daySelected.AddDays(1);
-            List<FlightInfo> flightInfoes= db.FlightInfoes.Where(m => m.FltDt.Value >= daySelected && m.FltDt.Value<nextday).OrderBy(m=>m.FltDt).ToList();
+            List<FlightInfo> flightInfoes = db.FlightInfoes.Where(m => m.FltDt.Value >= daySelected && m.FltDt.Value < nextday).OrderBy(m => m.FltDt).ToList();
+            return flightInfoes;
+
+        }
+        //通过日期和航空公司筛选
+        public List<FlightInfo> GetFlightInfoes(DateTime daySelected, string company)
+        {
+            DateTime nextday = daySelected.AddDays(1);
+            List<FlightInfo> flightInfoes = db.FlightInfoes.Where(m => m.FltDt.Value >= daySelected && m.FltDt.Value < nextday && m.AlnCd == company).OrderBy(m => m.FltDt).ToList();
             return flightInfoes;
 
         }
@@ -216,12 +260,12 @@ namespace JLMCC.Controllers
                 station = "长春";
             }
             //筛选选定机场的航班
-            List<FlightInfo> flightinfoes = GetFlightInfoesByDate(daySelected).Where(m => m.ArcArvCityName == station || m.ArcDepCityName == station).ToList();
+            List<FlightInfo> flightinfoes = GetFlightInfoes(daySelected).Where(m => m.ArcArvCityName == station || m.ArcDepCityName == station).ToList();
             //去掉航班状态代码为C(取消)和DEL(改直飞)的航班
             flightinfoes = flightinfoes.Where(m => m.LegStsCd != "C" && m.LegStsCd != "DEL").ToList();
 
             //选出不重复的飞机号
-            var planes = flightinfoes.Where(m=>m.LatestTailNr!="").OrderBy(m => m.LatestTailNr).Select(m => m.LatestTailNr).Distinct();
+            var planes = flightinfoes.Where(m => m.LatestTailNr != "").OrderBy(m => m.LatestTailNr).Select(m => m.LatestTailNr).Distinct();
 
             List<Section> sections = new List<Section>();
             int i = 1;
@@ -269,5 +313,233 @@ namespace JLMCC.Controllers
 
             return View();
         }
+
+        public ActionResult SCMulti()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SCMulti(FormCollection collection)
+        {
+            if (ModelState.IsValid)
+            {
+                string content = Request["List"];
+                string action = collection["action"];
+                string station = Request["Station"];
+                DateTime daySelected = Convert.ToDateTime(Request["date"]);
+
+                ViewBag.ContentString = content;
+                List<string> t = content.Split('\r', '\n').ToList();
+                ViewBag.Content = t;
+                ViewBag.Count = t.Count;
+                int skipCount = 0;
+                int faultCount = 0;
+                int submitCount = 0;
+                if (action == "提交")
+                {
+                    foreach (string item in t)
+                    {
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            var array = item.Split('\t');
+                            if (array[1].Trim().Substring(0, 2) != "CZ"  && array[0].Trim()!="日期" && !array[20].Contains("取消"))  //不是南航的航班或者取消的航班或者是表格第一行，不进行导入
+                            {
+                                FlightInfo flightInfo = new FlightInfo();
+                                flightInfo.AlnCd = array[1].Trim().Substring(0,2);
+                                flightInfo.AcfOper = flightInfo.AlnCd;
+                                flightInfo.FltDt = Convert.ToDateTime(array[0].Trim());
+                                flightInfo.FltNr = array[1].Trim().Substring(2).Trim();
+                                flightInfo.LatestEqpCd = array[2].Trim();
+                                flightInfo.LatestTailNr = array[3].Trim();
+                                flightInfo.ArcDepCityName = array[4].Trim();
+                                flightInfo.SchDepCityName = array[4].Trim();
+                                // flightInfo.SchDepDt = Convert.ToDateTime(array[0] + " " + array[5].Trim());
+                                //川航数据格式改变
+                                flightInfo.SchDepDt = Convert.ToDateTime(array[5].Trim());
+                                flightInfo.ArcArvCityName = array[9].Trim();
+                                flightInfo.SchArvCityName = array[9].Trim();
+                                // flightInfo.SchArvDt = Convert.ToDateTime(array[0] + " " + array[10].Trim());
+                                //川航数据格式改变
+                                flightInfo.SchArvDt = Convert.ToDateTime(array[10].Trim());
+                                if (flightInfo.SchArvDt<flightInfo.SchDepDt)
+                                {
+                                    flightInfo.SchArvDt = flightInfo.SchArvDt.Value.AddDays(1);
+                                }
+                            
+
+
+                                //跳过重复的航班
+                                var flightInfoinDb = from f in db.FlightInfoes
+                                                 where f.AlnCd == flightInfo.AlnCd &&
+                                                       f.AcfOper == flightInfo.AcfOper &&
+                                                       f.FltDt == flightInfo.FltDt &&
+                                                       f.FltNr == flightInfo.FltNr &&
+                                                       f.LatestEqpCd == flightInfo.LatestEqpCd &&
+                                                       f.LatestTailNr == flightInfo.LatestTailNr &&
+                                                       f.ArcDepCityName == flightInfo.ArcDepCityName &&
+                                                       f.SchDepCityName == flightInfo.SchDepCityName &&
+                                                       f.SchDepDt == flightInfo.SchDepDt &&
+                                                       f.ArcArvCityName == flightInfo.ArcArvCityName &&
+                                                       f.SchArvCityName == flightInfo.SchArvCityName &&
+                                                       f.SchArvDt == flightInfo.SchArvDt
+                                                     select f;
+
+                                if (flightInfoinDb.Count() == 0)
+                                {
+                                    db.FlightInfoes.Add(flightInfo);
+                                }
+                                else
+                                {
+                                    skipCount += 1;
+                                }
+
+
+                            }
+                            else
+                            {
+                                skipCount += 1;
+
+                            }
+                        }
+                       
+                    }
+                    submitCount = db.SaveChanges();
+                    
+                }
+                ViewBag.SubmitCount = submitCount;
+                ViewBag.SkipCount = skipCount;
+                ViewBag.FaultCount = faultCount;
+                return View();
+            }
+            return View();
+        }
+
+        public ActionResult MFMulti()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MFMulti(FormCollection collection)
+        {
+            if (ModelState.IsValid)
+            {
+                string content = Request["List"];
+                string action = collection["action"];
+                string station = Request["Station"];
+                DateTime daySelected = Convert.ToDateTime(Request["date"]);
+
+                ViewBag.ContentString = content;
+                List<string> t = content.Split('\r', '\n').ToList();
+                ViewBag.Content = t;
+                ViewBag.Count = t.Count;
+                int skipCount = 0;
+                int faultCount = 0;
+                int submitCount = 0;
+                if (action == "提交")
+                {
+                    foreach (string item in t)
+                    {
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            var array = item.Split('\t');
+                            if (array[1].Trim().Substring(0, 2) != "CZ"&& !array[0].Contains("性质") && !array[0].Contains("延误") && !array[22].Contains("取消"))  //不是南航的航班或者取消的航班或者是表格第一行，不进行导入
+                            {
+
+                                FlightInfo flightInfo = new FlightInfo();
+                                flightInfo.AlnCd = array[1].Trim().Substring(0,2);
+                                flightInfo.AcfOper = flightInfo.AlnCd;
+                                flightInfo.SvcChnDesc = array[0];
+                                flightInfo.FltDt = Convert.ToDateTime(array[29].Trim());
+                                flightInfo.FltNr = array[1].Trim().Substring(2);
+                                flightInfo.LatestEqpCd = array[2].Trim();
+                                flightInfo.LatestTailNr = array[3].Trim();
+                                flightInfo.ArcDepCityName = array[6].Trim();
+                                flightInfo.SchDepCityName = array[6].Trim();
+                                flightInfo.SchDepDt = Convert.ToDateTime(array[29] + " " + array[7].Trim());
+
+                                flightInfo.ArcArvCityName = array[16].Trim();
+                                flightInfo.SchArvCityName = array[16].Trim();
+                                flightInfo.SchArvDt = Convert.ToDateTime(array[29] + " " + array[15].Replace('+', ' ').Trim());
+                                if (flightInfo.SchArvDt < flightInfo.SchDepDt)
+                                {
+                                    flightInfo.SchArvDt = flightInfo.SchArvDt.Value.AddDays(1);
+                                }
+
+
+
+
+                                var flightInfoinDb = from f in db.FlightInfoes
+                                                     where f.AlnCd == flightInfo.AlnCd &&
+                                                           f.AcfOper == flightInfo.AcfOper &&
+                                                           f.FltDt == flightInfo.FltDt &&
+                                                           f.FltNr == flightInfo.FltNr &&
+                                                           f.LatestEqpCd == flightInfo.LatestEqpCd &&
+                                                           f.LatestTailNr == flightInfo.LatestTailNr &&
+                                                           f.ArcDepCityName == flightInfo.ArcDepCityName &&
+                                                           f.SchDepCityName == flightInfo.SchDepCityName &&
+                                                           f.SchDepDt == flightInfo.SchDepDt &&
+                                                           f.ArcArvCityName == flightInfo.ArcArvCityName &&
+                                                           f.SchArvCityName == flightInfo.SchArvCityName &&
+                                                           f.SchArvDt == flightInfo.SchArvDt
+                                                     select f;
+
+                                if (flightInfoinDb.Count() == 0)
+                                {
+                                    db.FlightInfoes.Add(flightInfo);
+
+                                }
+                                else
+                                {
+                                    skipCount += 1;
+                                }
+
+
+                            }
+                            else
+                            {
+                                skipCount += 1;
+
+                            }
+                        }
+                       
+                }
+                    submitCount = db.SaveChanges();
+
+
+                }
+                ViewBag.SubmitCount = submitCount;
+                ViewBag.SkipCount = skipCount;
+                ViewBag.FaultCount = faultCount;
+                return View();
+            }
+            return View();
+        }
+        //private DateTime SocTimeStringToDatetime(string soctime, DateTime daySelected)
+        //{
+        //    //将soc上时间字符串转换为datatime
+        //    int day = Convert.ToInt32(soctime.Substring(0, 2));
+        //    int hour = Convert.ToInt32(soctime.Substring(3, 2));
+        //    int min = Convert.ToInt32(soctime.Substring(5, 2));
+        //    if (day == daySelected.Day)
+        //    {
+        //        DateTime t = new DateTime(daySelected.Year, daySelected.Month, day, hour, min, 0);
+        //        return t;
+        //    }
+        //    else if (day == daySelected.AddDays(1).Day)
+        //    {
+        //        DateTime t = new DateTime(daySelected.AddDays(1).Year, daySelected.AddDays(1).Month, day, hour, min, 0);
+        //        return t;
+        //    }
+        //    else
+        //    {
+        //        return DateTime.MinValue;
+        //    }
+
+
+        //}
     }
 }

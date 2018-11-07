@@ -71,7 +71,7 @@ namespace JLMCC.Controllers
 
             FlightInfoesController FlightinfoesController = new FlightInfoesController();
             //获取所选日期的航班新信息，去掉航班状态代码为C(取消)和DEL(改直飞)的航班
-            List<FlightInfo> flightinfoes = FlightinfoesController.GetFlightInfoesByDate(daySelected).Where(m=>m.LegStsCd != "C"&&m.LegStsCd != "DEL").ToList();
+            List<FlightInfo> flightinfoes = FlightinfoesController.GetFlightInfoes(daySelected).Where(m=>m.LegStsCd != "C"&&m.LegStsCd != "DEL").ToList();
             if (station == null) { station = "长春"; }
             List<FlightInfo> flightinfoesOrdered = flightinfoes.OrderBy(m => m.LatestTailNr).ThenBy(m => m.SchDepDt.Value).ToList();
             List<FlightIntervalViewModel> flightIntervalViews = new List<FlightIntervalViewModel>();

@@ -350,6 +350,12 @@
     <Content Include="Content\dhtmlxscheduler\sources\skins\dhtmlxscheduler_contrast_white.css" />
     <Content Include="Content\dhtmlxscheduler\sources\skins\dhtmlxscheduler_flat.css" />
     <Content Include="Content\dhtmlxscheduler\sources\skins\dhtmlxscheduler_glossy.css" />
+    <Content Include="Content\img\csair128.png" />
+    <Content Include="Content\img\csair32.png" />
+    <Content Include="Content\img\sichuanair128.png" />
+    <Content Include="Content\img\sichuanair32.png" />
+    <Content Include="Content\img\xiamenair128.png" />
+    <Content Include="Content\img\xiamenair32.png" />
     <Content Include="Content\widget\Gantt\dhtmlxgantt.css" />
     <Content Include="Content\widget\Gantt\dhtmlxgantt.js" />
     <Content Include="Content\widget\Gantt\ext\dhtmlxgantt_csp.js" />
@@ -869,6 +875,10 @@
     <Content Include="Views\FlightInfoes\Edit.cshtml" />
     <Content Include="Views\FlightInfoes\Index.cshtml" />
     <Content Include="Views\FlightInfoes\Gantt.cshtml" />
+    <Content Include="Views\FlightInfoes\SCIndex.cshtml" />
+    <Content Include="Views\FlightInfoes\SCMulti.cshtml" />
+    <Content Include="Views\FlightInfoes\MFMulti.cshtml" />
+    <Content Include="Views\FlightInfoes\MFIndex.cshtml" />
     <None Include="Views\Services\Index.cshtml" />
     <Content Include="Views\Services\Enter.cshtml" />
     <Content Include="Views\Home\Settings.cshtml" />
@@ -895,7 +905,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\FlightinfoIntervalsView\" />
     <Folder Include="Views\Roles\" />
   </ItemGroup>
   <ItemGroup>

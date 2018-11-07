@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "Multi";
+
+}
+
+<h2>批量录入</h2>
+@* 日期控件相关引用资源 *@
+<script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
+<script src="~/Content/widget/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script>
+    $(document).ready(function () {
+      
+        //日期控件初始化
+        $('#datetimepicker').datetimepicker({
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            minView: 2,
+            todayBtn: true,
+            todayHighlight: true
+        });
+    })
+
+
+
+</script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <p>
+        航班：提交数量：@ViewBag.SubmitCount; 跳过数量：@ViewBag.SkipCount; 日期不符数量：@ViewBag.FaultCount
+    </p>
+   
+        <div class="form-group">
+            <div class="col-sm-4">
+
+                <div class="input-group date  " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                    <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
+                <input type="hidden" id="dtp_input2" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" /><br />
+
+
+
+            </div>
+            <div class="radio col-sm-4 ">
+                <label><input type="radio" name="Station" id="Station1" value="长春" checked />长春</label>
+                <label><input type="radio" name="Station" id="Station2" value="延吉" />延吉</label>
+                <label><input type="radio" name="Station" id="Station3" value="长白山" />长白山</label>
+            </div>
+            <div class="col-sm-12">
+                <textarea name="List" class="form-control col-lg-6" rows="20" cols="70" placeholder="日期	航班号	机型	机号	起飞	计飞	预飞	撤轮档	实飞	落地	计达	预达	实达	挡轮档	开舱	机位	机位(昆)	登机口	延误	反/备	取消"></textarea>
+            </div>
+
+            <div>
+                <input type="submit" value="预览" class="btn btn-info" name="action" />
+                <input type="submit" value="提交" class="btn btn-success" name="action" />
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <table class="table">
+                <tr>                   
+                    <th>0日期</th>
+                    <th>1航班号</th>
+                    <th>2机型</th>
+                    <th>3机号</th>
+                    <th>4起飞城市</th>
+                    <th>5计划起飞</th>
+                    <th>6预计起飞</th>
+                    <th>7撤轮挡</th>
+                    <th>8实际起飞</th>
+                    <th>9落地城市</th>
+                    <th>10计划到达</th>
+                    <th>11预计到达</th>
+                    <th>12实际到达</th>
+                    <th>13档轮挡</th>
+                    <th>14开舱门</th>
+                    <th>15机位</th>
+                    <th>16机位(昆)</th>
+                    <th>17登机口</th>
+                    <th>18延误</th>
+                    <th>19反/备</th>
+                    <th>20取消</th>
+                </tr>
+                @if (ViewBag.Content != null)
+                {
+                    foreach (string item in ViewBag.Content)
+                    {
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            <tr>
+                                @foreach (var t in item.Split('\t'))
+                                {
+                                    <td>@t.ToString()</td>
+                                }
+
+
+                            </tr>
+                        }
+                    }
+                }
+            </table>
+        </div>
+
+}
+
+<div>
+    @Html.ActionLink("返回", "SCIndex")
+</div>
+

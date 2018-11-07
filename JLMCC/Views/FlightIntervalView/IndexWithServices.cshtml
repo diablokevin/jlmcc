@@ -10,7 +10,12 @@
 {
     <script src="~/Scripts/jquery-3.1.1.min.js"></script>
 }
-
+<p>
+   <span>当日数据统计</span>
+    <span> 航前:@Model.Where(m => m.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前).Count()</span>
+    <span> 过站:@Model.Where(m => m.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站).Count()</span>
+    <span> 航后:@Model.Where(m => m.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航后).Count()</span>
+</p>
     @* 日期控件相关引用资源 *@
     <script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
     <link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
@@ -95,6 +100,8 @@
             <table id="intervalTalbe" class="table">
                 <tr >
                     <th>
+                    </th>
+                    <th>
                         @Html.DisplayNameFor(model => model.FlightInterval.PlaneNO)
                     </th>
                     <th>
@@ -104,27 +111,27 @@
                         @Html.DisplayNameFor(model => model.FlightInterval.Type)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.ArvStandNo)
+                      停机位
                     </th>
 
-                    <th>
+                    <th width="120px" class="text-center">
                         @Html.DisplayNameFor(model => model.FlightInterval.PreFlight)
                     </th>
 
-                    <th>
+                    <th class="text-nowrap">
                         @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.SchArvDt)
                     </th>
-                     <th>
+                     <th class="text-nowrap">
                         @Html.DisplayNameFor(model => model.FlightInterval.PreFlight.DwnTm)
                     </th>
-                    <th>
+                    <th width="120px" class="text-center">
                         @Html.DisplayNameFor(model => model.FlightInterval.NextFlight)
                     </th>
 
-                    <th>
+                    <th class="text-nowrap">
                         @Html.DisplayNameFor(model => model.FlightInterval.NextFlight.SchDepDt)
                     </th>
-                    <th>
+                    <th class="text-nowrap">
                         @Html.DisplayNameFor(model => model.FlightInterval.NextFlight.AirTm)
                     </th>
                     <th>
@@ -145,14 +152,39 @@
                     <th>
                         拖车司机
                     </th>
-                    <th>
+                    @if(User.IsInRole("调度"))
+                    { 
+                    <th class="text-nowrap">
                         调度放行
                     </th>
+                    }
                     <th></th>
                 </tr>
                 @foreach (var item in Model)
             {
                     <tr>
+                        <td>
+                            @{
+                                JLMCC.Models.FlightInfo flightinfo = item.FlightInterval.PreFlight ?? item.FlightInterval.NextFlight;
+
+                            }
+                            @switch (flightinfo.AlnCd)
+                            {
+                                case "CZ":
+                                    <img src="/Content/img/csair32.png" />
+                                    break;
+                                case "3U":
+                                    <img src="/Content/img/sichuanair32.png" />
+                                    break;
+                                case "MF":
+                                    <img src="/Content/img/xiamenair32.png" />
+                                    break;
+                                default:
+                                    break;
+
+                            }
+
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.FlightInterval.PlaneNO)
                         </td>
@@ -183,9 +215,10 @@
                             @if (item.FlightInterval.PreFlight != null)
                 {
                                 <a href="@Url.Action("Details", "Flightinfoes", new { id = item.FlightInterval.PreFlight.Id })">
-                                    <p>
+                                    <p class="text-center">
                                         <span>@item.FlightInterval.PreFlight.AlnCd</span>
-                                        <span>@item.FlightInterval.PreFlight.FltNr </span>
+                                        <span>@item.FlightInterval.PreFlight.FltNr </span>    
+                                        <br />
                                         <span>@item.FlightInterval.PreFlight.ArcDepCityName - @item.FlightInterval.PreFlight.ArcArvCityName</span>
                                     </p>
 
@@ -232,9 +265,10 @@
                             @if (item.FlightInterval.NextFlight != null)
                 {
                                 <a href="@Url.Action("Details", "Flightinfoes", new { id = item.FlightInterval.NextFlight.Id })">
-                                    <p>
+                                    <p class="text-center">
                                         <span>@item.FlightInterval.NextFlight.AlnCd</span>
                                         <span>@item.FlightInterval.NextFlight.FltNr </span>
+                                        <br />
                                         <span>@item.FlightInterval.NextFlight.ArcDepCityName - @item.FlightInterval.NextFlight.ArcArvCityName</span>
                                     </p>
                                 </a>}
@@ -424,7 +458,8 @@
 
                         </td>
 
-                        @{
+                        @{if(User.IsInRole("调度"))
+                            { 
                             if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航前 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
                             {
                                 <td id="td_@item.FlightInterval.NextFlight.Id" align="center">
@@ -452,6 +487,7 @@
                                 <td align="center">
                                     <span class="text-muted">N/A</span>
                                 </td>
+                                }
                             }
                         }
 

@@ -1,0 +1,214 @@
+﻿@model IEnumerable<JLMCC.Models.FlightInfo>
+
+@{
+    ViewBag.Title = "四川航空航班管理";
+}
+
+<h2>四川航空航班管理</h2>
+
+<p>
+    @Html.ActionLink("新建", "Create")
+</p>
+<p>
+    @Html.ActionLink("批量导入", "SCMulti")
+</p>
+
+@if (false)
+{
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+}
+    @* 日期控件相关引用资源 *@
+    <script src="~/Content/widget/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+    <link href="~/Content/widget/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen" />
+    <script src="~/Content/widget/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <script>
+
+
+        //跟据选择的日期刷新页面
+        function submitDate() {
+
+            var date = $('#d12').val();
+            window.location.href = "/FlightInfoes/SCIndex?date=" + date;
+
+        }
+
+
+        $(document).ready(function () {
+
+            //日期控件初始化
+            $('#datetimepicker').datetimepicker({
+                language: 'zh-CN',
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                minView: 2,
+                todayBtn: true,
+                todayHighlight: true
+
+
+            });
+            $('#datetimepickerinput').change(function () {
+                var date = $(this).val();
+                window.location.href = "/FlightInfoes/SCIndex?date=" + date;
+
+            });
+        }
+
+
+     )
+
+
+    </script>
+
+
+    <div class="input-group date col-sm-5 " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+        <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@ViewBag.Date" readonly>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    </div>
+    <input type="hidden" id="dtp_input2" value="" />
+    <br />
+    <div class="clear" />
+
+<table class="table">
+    <tr>        
+        <th>
+            @Html.DisplayNameFor(model => model.AlnCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FltDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FltNr)
+        </th>         
+        <th>
+            @Html.DisplayNameFor(model => model.SvcChnDesc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestTailNr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestEqpCd)
+        </th>     
+        <th>
+            @Html.DisplayNameFor(model => model.LegStsCd)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LegStsChn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AcfOper)
+        </th>              
+        <th>
+            @Html.DisplayNameFor(model => model.SchDepCityName)
+        </th>    
+        <th>
+            @Html.DisplayNameFor(model => model.ArcDepCityName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DepStandNo)
+        </th>        
+        <th>
+            @Html.DisplayNameFor(model => model.SchDepDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestDepDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AirTm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchArvCityName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArcArvCityName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SchArvDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.latestArvDt)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArvStandNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DwnTm)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>        
+        <td>
+            @Html.DisplayFor(modelItem => item.AlnCd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FltDt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FltNr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SvcChnDesc)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LatestTailNr)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LatestEqpCd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LegStsCd)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LegStsChn)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AcfOper)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SchDepCityName)
+        </td>       
+        <td>
+            @Html.DisplayFor(modelItem => item.ArcDepCityName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DepStandNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SchDepDt)
+        </td>       
+        <td>
+            @Html.DisplayFor(modelItem => item.LatestDepDt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AirTm)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SchArvCityName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArcArvCityName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SchArvDt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.latestArvDt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArvStandNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DwnTm)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

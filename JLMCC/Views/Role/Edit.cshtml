@@ -25,12 +25,14 @@
             {
                 <tr>
                     <td>用户名</td>
+                    <td>姓名</td>
                     <td>添加至角色</td>
                 </tr>
                 foreach (ApplicationUser user in Model.NonMembers)
                 {
                     <tr>
                         <td>@user.UserName</td>
+                        <td>@user.RealName</td>
                         <td>
                             <input type="checkbox" name="IdsToAdd" value="@user.Id">
                         </td>
@@ -52,12 +54,14 @@
             {
                 <tr>
                     <td>用户名</td>
+                    <td>姓名</td>
                     <td>从角色中移除</td>
                 </tr>
                 foreach (ApplicationUser user in Model.Members)
                 {
                     <tr>
                         <td>@user.UserName</td>
+                        <td>@user.RealName</td>
                         <td>
                             <input type="checkbox" name="IdsToDelete" value="@user.Id">
                         </td>

@@ -28,7 +28,10 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("主页", "Index", "Home")</li>
+                    @if(User.IsInRole("管理员"))
+                    { 
                     <li>@Html.ActionLink("设置", "Settings", "Home")</li> 
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

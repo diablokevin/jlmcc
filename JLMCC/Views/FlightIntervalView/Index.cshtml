@@ -45,33 +45,81 @@
             window.location.href = "/FlightIntervalView/Index?date=" + date + "&station=" + station;
 
         }
+
+        //按时间段进行筛选
+        function FiltFlightIntervals(before, after) {
+            var date = new Date();
+            $("[name=flightpanel]").hide();
+          
+        }
+        $("#test").click(function () {
+            FiltFlightIntervals(1, 1);
+            $("[name=flightpanel]").hide();
+        })
+      
       
     </script>
-
+ 
     <div class="container">
-        <div class="input-group date col-sm-5 " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-            <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@ViewBag.Date" readonly>
-            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-        </div>
-        <input type="hidden" id="dtp_input2" value="" /><br />
-
-
-        <div class="clear" />
-        <ul id="myTab" class="nav nav-tabs myNav">
-            <li class="active " id="TabCGQ"><a href="#CGQ" data-toggle="tab">长春</a></li>
-            <li class="" id="TabYNJ"><a href="#YNJ" data-toggle="tab">延吉</a></li>
-            <li class="" id="TabNBS"><a href="#NBS" data-toggle="tab">白山</a></li>
+        
+        @*待完成
+            <ul id="filterTab" class="nav nav-tabs">
+            <li class="active" id="TabTime">
+                <a href="#Time" data-toggle="tab">按时间段筛选</a>
+            </li>
+            <li class="" id="TabDate">
+                <a href="#Date" data-toggle="tab">按日期筛选</a>
+            </li>
         </ul>
+        
+        <div class="panel panel-primary">
+            <div class="tab-content">
+                <div class="tab-pane" id="Date">
+                    <div class="input-group date col-sm-5 " id="datetimepicker" data-date="" data-date-format="yyyy MM dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                        <input class="form-control" id="datetimepickerinput" size="16" type="text" value="@ViewBag.Date" readonly>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                    <input type="hidden" id="dtp_input2" value="" />
+                </div>
+                <div class="tab-pane active" id="Time">
+                    <div class="input-group">
+                        <span class="input-group-addon">前</span>
+                        <select id="hoursBefore" class="form-control">
+                            <option value="1">1小时</option>
+                            <option value="2">2小时</option>
+                            <option value="3">3小时</option>
+                            <option value="4">4小时</option>
+                            <option value="5">5小时</option>
+                        </select>
 
-        <div class="tab-content">
-            <div class="tab-pane  in active " id="CGQ"></div>
-            <div class="tab-pane " id="YNJ"></div>
-            <div class="tab-pane " id="NBS"></div>
+                        <span class="input-group-addon">后</span>
+                        <select id="hoursAfter" class="form-control">
+                            <option value="1">1小时</option>
+                            <option value="2" selected="selected">2小时</option>
+                            <option value="3">3小时</option>
+                            <option value="4">4小时</option>
+                            <option value="5">5小时</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+            <div class="clear" />
+            <ul id="myTab" class="nav nav-tabs myNav">
+                <li class="active " id="TabCGQ"><a href="#CGQ" data-toggle="tab">长春</a></li>
+                <li class="" id="TabYNJ"><a href="#YNJ" data-toggle="tab">延吉</a></li>
+                <li class="" id="TabNBS"><a href="#NBS" data-toggle="tab">白山</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane  in active " id="CGQ"></div>
+                <div class="tab-pane " id="YNJ"></div>
+                <div class="tab-pane " id="NBS"></div>
+
+            </div>
 
         </div>
-
-    </div>
 
         @foreach (var item in Model)
         {
@@ -90,15 +138,38 @@
                     break;
 
             }
+            DateTime? arrive = item.PreFlight == null ? null : (item.PreFlight.DwnTm ?? item.PreFlight.latestArvDt??item.PreFlight.SchArvDt);
+            DateTime? dep = item.NextFlight == null ? null : (item.NextFlight.AirTm ??item.NextFlight.LatestDepDt??item.NextFlight.SchDepDt);
 
 
-            <div class=" panel @panelType col-lg-12 container">
+            <div class=" panel @panelType col-lg-12 container" name="flightpanel" arv="@arrive" dep="@dep">
                 <div class="row panel-heading">
-                    <div class="panel-title col-xs-5 col-sm-3  col-lg-3">@item.PlaneNO | @item.PlaneType</div>
-                    <div class="panel-title col-xs-5 col-sm-3 col-lg-3">
+                    @{ 
+                        JLMCC.Models.FlightInfo flightinfo = item.PreFlight ?? item.NextFlight;
+                       
+                     }
+                    <div class="panel-title col-xs-7 col-sm-4  col-lg-3">
+                        @switch (flightinfo.AlnCd)
+                        {
+                            case "CZ":
+                                <img src="/Content/img/csair32.png" />
+                                break;
+                            case "3U":
+                                <img src="/Content/img/sichuanair32.png" />
+                                break;
+                            case "MF":
+                                <img src="/Content/img/xiamenair32.png" />
+                                break;
+                            default:
+                                break;
+
+                        }
+                        <span> @item.PlaneNO | @item.PlaneType</span>
+                    </div>
+                    <div class="panel-title col-xs-3 col-sm-3 col-lg-3">
 
                         @switch (item.Type)
-                        {
+                    {
                             case JLMCC.Models.FlightIntervalType.航前:
                                 @item.NextFlight.DepStandNo;
                                 break;
@@ -119,7 +190,7 @@
 
                 </div>
                 <div class="panel-body">
-                    <div class="col-md-6">
+                    <div class="col-md-6 ">
                         @if (item.PreFlight != null)
                         { 
                             <img src="~/Content/img/arrive.png" />
@@ -153,7 +224,7 @@
 
                         }
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6  ">
                         @if (item.NextFlight != null)
                         {
                             <img src="~/Content/img/depature.png" />
