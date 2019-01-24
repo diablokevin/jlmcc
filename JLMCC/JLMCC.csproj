@@ -27,6 +27,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -537,6 +538,7 @@
     <Content Include="Content\widget\bootstrap-datetimepicker-master\sample in bootstrap v3\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\widget\bootstrap-datetimepicker-master\tests\README.md" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
     <None Include="Scripts\dhtmlxscheduler\dhtmlxscheduler.js.orgin" />
     <Content Include="Scripts\dhtmlxscheduler\dhtmlxscheduler.js" />
     <Content Include="Scripts\dhtmlxscheduler\ext\dhtmlxscheduler_active_links.js" />

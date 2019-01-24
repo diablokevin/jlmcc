@@ -134,7 +134,7 @@
                     <th class="text-nowrap">
                         @Html.DisplayNameFor(model => model.FlightInterval.NextFlight.AirTm)
                     </th>
-                    <th>
+                    @*<th>
                         接机人员
                     </th>
                     <th>
@@ -157,7 +157,7 @@
                     <th class="text-nowrap">
                         调度放行
                     </th>
-                    }
+                    }*@
                     <th></th>
                 </tr>
                 @foreach (var item in Model)
@@ -311,7 +311,7 @@
 
                         </td>
 
-                        <td align="center">
+                        @*<td align="center">
                             @{
                                 if (item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.航后 || item.FlightInterval.Type == JLMCC.Models.FlightIntervalType.过站)
                                 {
@@ -489,7 +489,7 @@
                                 </td>
                                 }
                             }
-                        }
+                        }*@
 
 
 
